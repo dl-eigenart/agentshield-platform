@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgentShield — Usage Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0f;--surface:#12121a;--border:#1e1e2e;--text:#e2e2e8;--muted:#8888a0;--accent:#6366f1;--accent2:#818cf8;--green:#22c55e;--red:#ef4444;--orange:#f59e0b;--cyan:#06b6d4}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+a{color:var(--accent2);text-decoration:none}
+
+/* Nav */
+.nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;height:56px;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{font-size:1.1rem;font-weight:700;display:flex;align-items:center;gap:.5rem}
+.nav-title{color:var(--muted);font-size:.85rem;font-weight:500}
+.nav-right{display:flex;align-items:center;gap:1rem}
+.nav-status{font-size:.7rem;color:var(--green);display:flex;align-items:center;gap:.3rem}
+.nav-status::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green)}
+.btn-logout{background:none;border:1px solid var(--border);color:var(--muted);padding:.3rem .8rem;border-radius:6px;font-size:.75rem;cursor:pointer}
+.btn-logout:hover{border-color:var(--accent);color:var(--text)}
+
+/* Login */
+.login-overlay{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:1000}
+.login-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:2.5rem;max-width:400px;width:90%;text-align:center}
+.login-box h2{font-size:1.3rem;margin-bottom:.3rem}
+.login-box p{color:var(--muted);font-size:.85rem;margin-bottom:1.5rem}
+.login-input{width:100%;padding:.7rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:.85rem;font-family:monospace;margin-bottom:1rem}
+.login-input:focus{outline:none;border-color:var(--accent)}
+.login-btn{width:100%;padding:.7rem;background:var(--accent);color:#fff;border:none;border-radius:8px;font-weight:600;font-size:.9rem;cursor:pointer}
+.login-btn:hover{background:var(--accent2)}
+.login-error{color:var(--red);font-size:.8rem;margin-top:.5rem;display:none}
+
+/* Dashboard */
+.dashboard{display:none;padding:1.5rem 2rem;max-width:1200px;margin:0 auto}
+.updated{color:var(--muted);font-size:.7rem;margin-bottom:1.5rem}
+
+/* Cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.2rem 1.5rem}
+.card-label{color:var(--muted);font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.3rem}
+.card-value{font-size:2rem;font-weight:800}
+.card-sub{color:var(--muted);font-size:.75rem;margin-top:.2rem}
+.v-green{color:var(--green)}.v-accent{color:var(--accent2)}.v-cyan{color:var(--cyan)}.v-orange{color:var(--orange)}
+
+/* Charts */
+.charts{display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;margin-bottom:2rem}
+.chart-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem}
+.chart-box h3{font-size:.9rem;font-weight:700;margin-bottom:1rem}
+
+/* Table */
+.table-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;overflow-x:auto}
+.table-box h3{font-size:.9rem;font-weight:700;margin-bottom:1rem}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;color:var(--muted);font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:.6rem .8rem;border-bottom:1px solid var(--border)}
+td{padding:.6rem .8rem;font-size:.85rem;border-bottom:1px solid var(--border)}
+tr:hover td{background:rgba(99,102,241,.04)}
+.tier-badge{padding:.15rem .5rem;border-radius:4px;font-size:.7rem;font-weight:700;text-transform:uppercase}
+.tier-free{background:rgba(136,136,160,.15);color:var(--muted)}
+.tier-dev{background:rgba(99,102,241,.15);color:var(--accent2)}
+.tier-pro{background:rgba(34,197,94,.15);color:var(--green)}
+.tier-enterprise{background:rgba(245,158,11,.15);color:var(--orange)}
+
+/* Responsive */
+@media(max-width:768px){
+  .charts{grid-template-columns:1fr}
+  .cards{grid-template-columns:1fr 1fr}
+  .dashboard{padding:1rem}
+}
+@media(max-width:480px){
+  .cards{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <div style="display:flex;align-items:center;gap:1.5rem">
+    <a href="/" class="nav-brand" style="text-decoration:none;color:inherit">&#128737; AgentShield</a>
+    <div class="nav-title">Dashboard</div>
+  </div>
+  <div class="nav-right" id="navRight" style="display:none">
+    <div class="nav-status">Live</div>
+    <button class="btn-logout" onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<!-- Login -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <h2>&#128737; AgentShield</h2>
+    <p>Enter your admin API key to access the dashboard</p>
+    <input type="password" class="login-input" id="apiKeyInput" placeholder="ask_..." autocomplete="off">
+    <button class="login-btn" onclick="doLogin()">Access Dashboard</button>
+    <div class="login-error" id="loginError">Invalid API key or unauthorized</div>
+  </div>
+</div>
+
+<!-- Dashboard -->
+<div class="dashboard" id="dashboard">
+  <div class="updated" id="lastUpdated">Loading...</div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-label">Requests Today</div>
+      <div class="card-value v-cyan" id="reqToday">—</div>
+      <div class="card-sub" id="reqTrend"></div>
+    </div>
+    <div class="card">
+      <div class="card-label">Active API Keys</div>
+      <div class="card-value v-accent" id="activeKeys">—</div>
+      <div class="card-sub" id="keysSub"></div>
+    </div>
+    <div class="card">
+      <div class="card-label">Paid Subscriptions</div>
+      <div class="card-value v-green" id="paidSubs">—</div>
+      <div class="card-sub" id="mrrSub"></div>
+    </div>
+    <div class="card">
+      <div class="card-label">Avg Response Time</div>
+      <div class="card-value v-orange" id="avgLatency">—</div>
+      <div class="card-sub">classifier latency</div>
+    </div>
+  </div>
+
+  <div class="charts">
+    <div class="chart-box">
+      <h3>Requests (Last 30 Days)</h3>
+      <canvas id="lineChart"></canvas>
+    </div>
+    <div class="chart-box">
+      <h3>Requests by Tier</h3>
+      <canvas id="doughnutChart"></canvas>
+    </div>
+  </div>
+
+  <div class="table-box">
+    <h3>API Keys</h3>
+    <table>
+      <thead>
+        <tr><th>Key Prefix</th><th>Tier</th><th>Owner</th><th>Today</th><th>Total</th><th>Created</th></tr>
+      </thead>
+      <tbody id="keysTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+let apiKey = '';
+let lineChart = null;
+let doughnutChart = null;
+let refreshInterval = null;
+
+const API_BASE = 'https://api.agentshield.pro';
+
+async function doLogin() {
+  const key = document.getElementById('apiKeyInput').value.trim();
+  if (!key) return;
+  apiKey = key;
+
+  try {
+    const resp = await fetch(`${API_BASE}/health`, {
+      headers: { 'Authorization': `Bearer ${key}` }
+    });
+    if (resp.ok) {
+      document.getElementById('loginOverlay').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      document.getElementById('navRight').style.display = 'flex';
+      loadDashboard();
+      refreshInterval = setInterval(loadDashboard, 60000);
+    } else {
+      showLoginError();
+    }
+  } catch (e) {
+    showLoginError();
+  }
+}
+
+function showLoginError() {
+  document.getElementById('loginError').style.display = 'block';
+  setTimeout(() => document.getElementById('loginError').style.display = 'none', 3000);
+}
+
+function logout() {
+  apiKey = '';
+  if (refreshInterval) clearInterval(refreshInterval);
+  document.getElementById('loginOverlay').style.display = 'flex';
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('navRight').style.display = 'none';
+  document.getElementById('apiKeyInput').value = '';
+}
+
+async function apiFetch(path) {
+  const resp = await fetch(`${API_BASE}${path}`, {
+    headers: { 'Authorization': `Bearer ${apiKey}` }
+  });
+  if (!resp.ok) throw new Error(`API error: ${resp.status}`);
+  return resp.json();
+}
+
+async function loadDashboard() {
+  try {
+    const [keys, usage] = await Promise.all([
+      apiFetch('/admin/keys').catch(() => []),
+      apiFetch('/admin/usage').catch(() => ({ daily: [], total: 0 }))
+    ]);
+
+    const now = new Date().toLocaleTimeString();
+    document.getElementById('lastUpdated').textContent = `Last updated: ${now} · Auto-refresh every 60s`;
+
+    // Cards
+    const keyList = Array.isArray(keys) ? keys : (keys.keys || []);
+    const usageData = usage.daily || usage.usage || [];
+    const totalReqs = typeof usage.total === 'number' ? usage.total : usageData.reduce((s, d) => s + (d.requests || d.count || 0), 0);
+    const todayReqs = usageData.length > 0 ? (usageData[usageData.length - 1].requests || usageData[usageData.length - 1].count || 0) : totalReqs;
+
+    document.getElementById('reqToday').textContent = todayReqs.toLocaleString();
+    document.getElementById('activeKeys').textContent = keyList.length;
+
+    const paidKeys = keyList.filter(k => k.tier && k.tier !== 'free');
+    document.getElementById('paidSubs').textContent = paidKeys.length;
+
+    const mrr = paidKeys.reduce((sum, k) => {
+      if (k.tier === 'dev') return sum + 29;
+      if (k.tier === 'pro') return sum + 99;
+      return sum;
+    }, 0);
+    document.getElementById('mrrSub').textContent = mrr > 0 ? `$${mrr}/mo MRR` : 'No paid plans yet';
+    document.getElementById('avgLatency').textContent = '~50ms';
+
+    // Line Chart
+    const labels = usageData.map((d, i) => d.date || `Day ${i + 1}`);
+    const values = usageData.map(d => d.requests || d.count || 0);
+
+    if (lineChart) lineChart.destroy();
+    lineChart = new Chart(document.getElementById('lineChart'), {
+      type: 'line',
+      data: {
+        labels: labels.length ? labels : ['Today'],
+        datasets: [{
+          label: 'Requests',
+          data: values.length ? values : [todayReqs],
+          borderColor: '#6366f1',
+          backgroundColor: 'rgba(99,102,241,.1)',
+          fill: true,
+          tension: 0.4,
+          pointRadius: 2,
+          pointHoverRadius: 5
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { color: '#1e1e2e' }, ticks: { color: '#8888a0', font: { size: 10 } } },
+          y: { grid: { color: '#1e1e2e' }, ticks: { color: '#8888a0', font: { size: 10 } }, beginAtZero: true }
+        }
+      }
+    });
+
+    // Doughnut Chart
+    const tierCounts = { free: 0, dev: 0, pro: 0, enterprise: 0 };
+    keyList.forEach(k => { tierCounts[k.tier || 'free'] = (tierCounts[k.tier || 'free'] || 0) + 1; });
+
+    if (doughnutChart) doughnutChart.destroy();
+    doughnutChart = new Chart(document.getElementById('doughnutChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Free', 'Dev', 'Pro', 'Enterprise'],
+        datasets: [{
+          data: [tierCounts.free, tierCounts.dev, tierCounts.pro, tierCounts.enterprise],
+          backgroundColor: ['#8888a0', '#6366f1', '#22c55e', '#f59e0b'],
+          borderColor: '#12121a',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom', labels: { color: '#8888a0', font: { size: 11 }, padding: 15 } }
+        },
+        cutout: '65%'
+      }
+    });
+
+    // Table
+    const tbody = document.getElementById('keysTable');
+    tbody.innerHTML = keyList.map(k => `<tr>
+      <td style="font-family:monospace;font-size:.8rem">${k.key_prefix || k.prefix || '?'}</td>
+      <td><span class="tier-badge tier-${k.tier || 'free'}">${k.tier || 'free'}</span></td>
+      <td>${k.owner || k.name || '—'}</td>
+      <td>${(k.requests_today || 0).toLocaleString()}</td>
+      <td>${(k.requests_total || k.total_requests || 0).toLocaleString()}</td>
+      <td style="color:var(--muted);font-size:.8rem">${k.created_at ? new Date(k.created_at * 1000).toLocaleDateString() : '—'}</td>
+    </tr>`).join('');
+
+  } catch (e) {
+    console.error('Dashboard load error:', e);
+  }
+}
+
+// Pause refresh when tab hidden
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && refreshInterval) {
+    clearInterval(refreshInterval);
+    refreshInterval = null;
+  } else if (!document.hidden && apiKey && !refreshInterval) {
+    loadDashboard();
+    refreshInterval = setInterval(loadDashboard, 60000);
+  }
+});
+
+// Enter key to login
+document.getElementById('apiKeyInput').addEventListener('keypress', e => {
+  if (e.key === 'Enter') doLogin();
+});
+</script>
+</body>
+</html>

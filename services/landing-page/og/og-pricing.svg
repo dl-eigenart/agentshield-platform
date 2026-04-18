@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a0a0f"/>
+      <stop offset="100%" stop-color="#0e0e18"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.2" cy="0.2" r="0.8">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.28"/>
+      <stop offset="70%" stop-color="#6366f1" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="rule" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#818cf8" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+
+  <!-- decorative grid -->
+  <g stroke="#1e1e2e" stroke-width="1" opacity="0.6">
+    <line x1="0" y1="80" x2="1200" y2="80"/>
+    <line x1="0" y1="550" x2="1200" y2="550"/>
+  </g>
+
+  <!-- logo lockup -->
+  <g transform="translate(80, 110)">
+    <path d="M2.0,2.0 C2.0,12.8 2.0,25.4 20,38.0 C38.0,25.4 38.0,12.8 38.0,2.0 C27.2,5.6 12.8,5.6 2.0,2.0 Z" fill="#6366f1" fill-opacity="0.2"
+          stroke="#6366f1" stroke-width="2"/>
+    <path d="M12,18 L18,24 L30,12" fill="none" stroke="#818cf8" stroke-width="3"
+          stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="56" y="27" fill="#e4e4e7"
+          font-family="Inter, system-ui, sans-serif" font-size="22" font-weight="700"
+          letter-spacing="-0.01em">
+      AgentShield
+    </text>
+  </g>
+
+  <!-- eyebrow -->
+  <text x="80" y="158" fill="#a1a1aa"
+        font-family="'JetBrains Mono', monospace" font-size="15" font-weight="500"
+        letter-spacing="0.22em" text-transform="uppercase">
+    Pricing · Simple tiers
+  </text>
+
+  
+        <g transform="translate(80, 180)">
+          <rect rx="999" ry="999" x="0" y="0" width="97" height="38"
+                fill="#6366f1" fill-opacity="0.14" stroke="#6366f1" stroke-opacity="0.45"/>
+          <circle cx="20" cy="19" r="4" fill="#818cf8"/>
+          <text x="34" y="25" fill="#818cf8"
+                font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="600"
+                letter-spacing="0.08em" text-transform="uppercase">Pricing</text>
+        </g>
+        
+
+  <!-- accent rule -->
+  <rect x="80" y="225" width="120" height="4" rx="2" fill="url(#rule)"/>
+
+  <!-- title -->
+  <text fill="#e4e4e7"
+        font-family="Inter, system-ui, sans-serif" font-size="66" font-weight="700"
+        letter-spacing="-0.02em">
+    <tspan x="80" y="300">Free, Dev, Pro,</tspan><tspan x="80" y="388">or Enterprise.</tspan>
+  </text>
+
+  
+
+  <!-- subtitle -->
+  <text x="80" y="500" fill="#a1a1aa"
+        font-family="Inter, system-ui, sans-serif" font-size="24" font-weight="400"
+        letter-spacing="0">
+    Start free. Scale to 50,000/day for $99. Self-host when you outgrow us.
+  </text>
+
+  <!-- footer -->
+  <g transform="translate(80, 570)">
+    <circle cx="6" cy="-5" r="5" fill="#22c55e"/>
+    <text x="22" y="0" fill="#a1a1aa"
+          font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="500">
+      agentshield.dev
+    </text>
+    <text x="1040" y="0" fill="#a1a1aa" text-anchor="end"
+          font-family="'JetBrains Mono', monospace" font-size="15" font-weight="500"
+          letter-spacing="0.12em" text-transform="uppercase">
+      LLM · Security · API
+    </text>
+  </g>
+</svg>

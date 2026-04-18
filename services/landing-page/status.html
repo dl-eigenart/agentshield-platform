@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Status — AgentShield</title>
+<meta name="description" content="AgentShield live status, 30-day uptime history, and latency metrics. Updated every 60 seconds.">
+<meta name="robots" content="index,follow">
+<meta property="og:title" content="AgentShield Status">
+<meta property="og:description" content="Live status + 30-day uptime history for the AgentShield API.">
+<meta property="og:url" content="https://agentshield.pro/status">
+<meta property="og:image" content="https://agentshield.pro/static/og/status.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://agentshield.pro/static/og/status.png">
+<link rel="canonical" href="https://agentshield.pro/status">
+<link rel="icon" href="/static/logo-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0f;--surface:#12121a;--border:#1e1e2e;--text:#e2e2e8;--muted:#8888a0;--accent:#6366f1;--accent2:#818cf8;--green:#22c55e;--red:#ef4444;--orange:#f59e0b;--cyan:#06b6d4;--yellow:#eab308}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+a{color:var(--accent2);text-decoration:none}
+a:hover{text-decoration:underline}
+code,pre{font-family:'JetBrains Mono',monospace}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:blur(20px);background:rgba(10,10,15,.85);border-bottom:1px solid var(--border);padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:1.2rem;font-weight:700;display:flex;align-items:center;gap:.5rem}
+.logo-shield{width:28px;height:28px;border-radius:6px;overflow:hidden}.logo-shield img{width:100%;height:100%;object-fit:cover}
+nav .links{display:flex;gap:2rem;align-items:center}
+nav .links a{color:var(--muted);font-size:.9rem;font-weight:500;transition:color .2s}
+nav .links a:hover{color:var(--text);text-decoration:none}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1.4rem;border-radius:8px;font-weight:600;font-size:.9rem;transition:all .2s;border:none;cursor:pointer;text-decoration:none}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent2);text-decoration:none}
+.btn-outline{border:1px solid var(--border);color:var(--text);background:transparent}
+.btn-outline:hover{border-color:var(--accent);text-decoration:none}
+
+.wrap{max-width:1100px;margin:0 auto;padding:7rem 2rem 4rem}
+.eyebrow{color:var(--accent2);font-size:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.8rem}
+h1{font-size:clamp(2rem,4vw,2.8rem);font-weight:800;line-height:1.15;margin-bottom:.5rem;color:#fff}
+.sub{color:var(--muted);font-size:1rem;margin-bottom:2rem}
+h2{font-size:1.3rem;font-weight:700;margin:2.5rem 0 1rem;color:#fff}
+.muted{color:var(--muted);font-size:.85rem}
+
+.banner{display:flex;align-items:center;gap:1rem;padding:1.4rem 1.6rem;border-radius:14px;margin-bottom:2rem;border:1px solid}
+.banner.op{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.3)}
+.banner.deg{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.3)}
+.banner.down{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.3)}
+.banner.load{background:var(--surface);border-color:var(--border)}
+.banner .dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;animation:pulse 2s infinite}
+.banner.op .dot{background:var(--green)}
+.banner.deg .dot{background:var(--orange)}
+.banner.down .dot{background:var(--red)}
+.banner.load .dot{background:var(--muted);animation:none}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.banner h2{margin:0;font-size:1.15rem;color:#fff}
+.banner p{margin:0;color:var(--muted);font-size:.85rem}
+.banner .meta{margin-left:auto;text-align:right;font-size:.8rem;color:var(--muted)}
+.banner .meta strong{color:var(--text);display:block;font-size:.95rem}
+
+.service{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem;margin-bottom:1.5rem}
+.service-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem}
+.service-head h3{font-size:1rem;font-weight:700;margin:0}
+.service-head .pct{font-family:'JetBrains Mono',monospace;font-size:.9rem;color:var(--green);font-weight:600}
+.bars{display:flex;gap:2px;height:40px;overflow:hidden}
+.bar{flex:1;min-width:4px;border-radius:2px;background:#1a1a24;transition:transform .15s;cursor:pointer}
+.bar.op{background:var(--green)}
+.bar.deg{background:var(--orange)}
+.bar.down{background:var(--red)}
+.bar.empty{background:#1a1a24}
+.bar:hover{transform:scaleY(1.1)}
+.bars-legend{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-top:.4rem}
+
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1.5rem 0}
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.2rem}
+.metric-label{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:.5rem}
+.metric-value{font-size:1.6rem;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace}
+.metric .delta{font-size:.8rem;color:var(--muted);margin-top:.3rem}
+
+.spark{display:flex;align-items:flex-end;gap:2px;height:60px;margin-top:.8rem}
+.spark .bar2{flex:1;min-width:2px;background:var(--accent2);border-radius:1px;opacity:.7}
+
+.subscribe{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem;margin-top:2rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.subscribe p{margin:0;color:var(--muted);font-size:.9rem;flex:1;min-width:220px}
+
+footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--muted);font-size:.8rem;max-width:1100px;margin:3rem auto 0}
+@media(max-width:640px){nav .links a:not(.btn){display:none}}
+
+.tooltip{position:absolute;background:#1a1a24;border:1px solid var(--border);padding:.5rem .8rem;border-radius:6px;font-size:.75rem;pointer-events:none;z-index:50;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+</style>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "AgentShield Status",
+  "description": "Live status, 30-day uptime history, and latency metrics for the AgentShield API.",
+  "image": "https://agentshield.pro/static/og/status.png",
+  "url": "https://agentshield.pro/status",
+  "isPartOf": { "@type": "WebSite", "url": "https://agentshield.pro/", "name": "AgentShield" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://agentshield.pro/" },
+    { "@type": "ListItem", "position": 2, "name": "Status", "item": "https://agentshield.pro/status" }
+  ]
+}
+</script>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo" style="text-decoration:none;color:inherit"><div class="logo-shield"><img src="/static/logo-icon.png?v=1" alt="AgentShield"></div> AgentShield</a>
+  <div class="links">
+    <a href="/#features">Features</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/compare">Compare</a>
+    <a href="/benchmark">Benchmark</a>
+    <a href="/blog">Blog</a>
+    <a href="https://api.agentshield.pro/docs" target="_blank">API Docs</a>
+    <a href="/signup" class="btn btn-primary">Get API Key</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="eyebrow">System status</div>
+  <h1>AgentShield Status</h1>
+  <p class="sub">Live status of the classifier + API gateway. Uptime measured every 60 seconds from the landing-page host. No synthetic marketing metrics.</p>
+
+  <div class="banner load" id="banner">
+    <div class="dot"></div>
+    <div>
+      <h2 id="banner-title">Loading current status…</h2>
+      <p id="banner-sub">Fetching latest health check.</p>
+    </div>
+    <div class="meta" id="banner-meta"></div>
+  </div>
+
+  <h2>API Gateway — 30-day uptime</h2>
+  <div class="service">
+    <div class="service-head">
+      <h3>api.agentshield.pro</h3>
+      <div class="pct" id="uptime-30">—</div>
+    </div>
+    <div class="bars" id="bars-30"></div>
+    <div class="bars-legend">
+      <span>30 days ago</span>
+      <span>today</span>
+    </div>
+  </div>
+
+  <div class="metrics">
+    <div class="metric">
+      <div class="metric-label">Uptime (30d)</div>
+      <div class="metric-value" id="m-uptime">—</div>
+      <div class="delta">SLO target: 99.5%</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Last check latency</div>
+      <div class="metric-value" id="m-latency">—</div>
+      <div class="delta" id="m-latency-sub">Gateway /health endpoint</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Checks in DB</div>
+      <div class="metric-value" id="m-checks">—</div>
+      <div class="delta">One check per minute</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Region</div>
+      <div class="metric-value" style="font-size:1rem">Frankfurt, DE</div>
+      <div class="delta">EU data residency</div>
+    </div>
+  </div>
+
+  <h2>Recent latency (last 2 hours)</h2>
+  <div class="service">
+    <div class="service-head">
+      <h3 style="color:var(--muted);font-weight:500">Lower is better — each bar is one 60-second check</h3>
+    </div>
+    <div class="spark" id="spark"></div>
+    <div class="bars-legend">
+      <span>2h ago</span>
+      <span>now</span>
+    </div>
+  </div>
+
+  <div class="subscribe">
+    <p>Want downtime alerts? Enterprise customers get webhook + email notifications on status changes. <a href="mailto:info@leonforte.de">Contact us</a>.</p>
+    <a href="/signup" class="btn btn-primary">Get Free API Key</a>
+  </div>
+
+  <p class="muted" style="margin-top:2rem">Page auto-refreshes every 60 seconds. Check data is polled from the gateway's <code>/health</code> endpoint by the landing-page service and stored locally. Historical data is retained for 40 days.</p>
+</div>
+
+<footer>
+  <p>&copy; 2026 AgentShield by Eigenart Filmproduktion &mdash; Frankfurt, Germany</p>
+  <p style="margin-top:.5rem"><a href="/blog">Blog</a> &middot; <a href="/benchmark">Benchmark</a> &middot; <a href="/compare">Compare</a> &middot; <a href="/status">Status</a> &middot; <a href="/account">Account</a> &middot; <a href="https://api.agentshield.pro/docs">API Docs</a> &middot; <a href="mailto:info@leonforte.de">Contact</a></p>
+  <p style="margin-top:.5rem"><a href="/terms">Terms</a> &middot; <a href="/privacy">Privacy</a> &middot; <a href="/refund">Refund Policy</a></p>
+</footer>
+
+<script>
+function fmtPct(p){ return p===null||p===undefined ? '—' : p.toFixed(2)+'%' }
+function fmtMs(v){ return v===null||v===undefined ? '—' : Math.round(v)+' ms' }
+function fmtTime(ts){
+  const d = new Date(ts*1000);
+  return d.toLocaleString();
+}
+
+function render30(daily){
+  const wrap = document.getElementById('bars-30');
+  wrap.innerHTML = '';
+  // build 30-day window with empty days filled in
+  const today = new Date();
+  today.setUTCHours(0,0,0,0);
+  const byDay = {};
+  daily.forEach(d => byDay[d.day] = d);
+  const frag = document.createDocumentFragment();
+  for (let i=29;i>=0;i--){
+    const d = new Date(today);
+    d.setUTCDate(d.getUTCDate()-i);
+    const iso = d.toISOString().slice(0,10);
+    const e = byDay[iso];
+    const bar = document.createElement('div');
+    bar.className = 'bar empty';
+    if (e && e.checks>0){
+      const pct = e.uptime_pct;
+      if (pct===100) bar.className='bar op';
+      else if (pct>=99) bar.className='bar deg';
+      else bar.className='bar down';
+      bar.title = `${iso} — ${pct.toFixed(2)}% up (${e.checks} checks, ${e.down} failed)`;
+    } else {
+      bar.title = `${iso} — no data`;
+    }
+    frag.appendChild(bar);
+  }
+  wrap.appendChild(frag);
+}
+
+function renderSpark(recent){
+  const spark = document.getElementById('spark');
+  spark.innerHTML='';
+  if (!recent.length){ spark.innerHTML='<p class="muted" style="margin:0">No recent data yet.</p>'; return; }
+  const max = Math.max(...recent.map(r=>r.latency_ms||0), 50);
+  recent.forEach(r=>{
+    const bar = document.createElement('div');
+    bar.className='bar2';
+    const h = Math.max(3, (r.latency_ms||0)/max * 60);
+    bar.style.height = h+'px';
+    bar.title = fmtTime(r.ts)+' — '+fmtMs(r.latency_ms);
+    spark.appendChild(bar);
+  });
+}
+
+function renderBanner(latest){
+  const b = document.getElementById('banner');
+  const t = document.getElementById('banner-title');
+  const s = document.getElementById('banner-sub');
+  const m = document.getElementById('banner-meta');
+  if (!latest){
+    b.className='banner load';
+    t.textContent='No data yet';
+    s.textContent='Monitor just started — come back in a minute.';
+    return;
+  }
+  if (latest.status==='operational'){
+    b.className='banner op';
+    t.textContent='All systems operational';
+    s.textContent='Classifier healthy. Last check '+fmtTime(latest.ts)+'.';
+  } else if (latest.status==='degraded'){
+    b.className='banner deg';
+    t.textContent='Degraded performance';
+    s.textContent='Gateway reachable but classifier is reporting issues. Last check '+fmtTime(latest.ts)+'.';
+  } else {
+    b.className='banner down';
+    t.textContent='Service unavailable';
+    s.textContent='Gateway /health check failed. Last check '+fmtTime(latest.ts)+'.';
+  }
+  m.innerHTML = '<strong>'+fmtMs(latest.latency_ms)+'</strong>last-check latency';
+}
+
+async function refresh(){
+  try{
+    const r = await fetch('/api/status-data', {cache:'no-store'});
+    if (!r.ok) throw new Error('status '+r.status);
+    const data = await r.json();
+    document.getElementById('uptime-30').textContent = fmtPct(data.uptime_30d);
+    document.getElementById('m-uptime').textContent = fmtPct(data.uptime_30d);
+    document.getElementById('m-latency').textContent = data.latest ? fmtMs(data.latest.latency_ms) : '—';
+    const totalChecks = (data.daily||[]).reduce((a,d)=>a+(d.checks||0),0);
+    document.getElementById('m-checks').textContent = totalChecks.toLocaleString();
+    renderBanner(data.latest);
+    render30(data.daily||[]);
+    renderSpark(data.recent_latency||[]);
+  }catch(e){
+    const b = document.getElementById('banner');
+    b.className='banner down';
+    document.getElementById('banner-title').textContent='Status page error';
+    document.getElementById('banner-sub').textContent='Could not fetch /api/status-data: '+e.message;
+  }
+}
+refresh();
+setInterval(refresh, 60000);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Account — AgentShield</title>
+<meta name="description" content="View your AgentShield API key usage, daily quota, and upgrade options.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/static/logo-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0f;--surface:#12121a;--border:#1e1e2e;--text:#e2e2e8;--muted:#8888a0;--accent:#6366f1;--accent2:#818cf8;--green:#22c55e;--red:#ef4444;--orange:#f59e0b;--cyan:#06b6d4;--yellow:#eab308}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+a{color:var(--accent2);text-decoration:none}
+a:hover{text-decoration:underline}
+code,pre{font-family:'JetBrains Mono',monospace}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:blur(20px);background:rgba(10,10,15,.85);border-bottom:1px solid var(--border);padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:1.2rem;font-weight:700;display:flex;align-items:center;gap:.5rem}
+.logo-shield{width:28px;height:28px;border-radius:6px;overflow:hidden}.logo-shield img{width:100%;height:100%;object-fit:cover}
+nav .links{display:flex;gap:2rem;align-items:center}
+nav .links a{color:var(--muted);font-size:.9rem;font-weight:500;transition:color .2s}
+nav .links a:hover{color:var(--text);text-decoration:none}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.65rem 1.35rem;border-radius:8px;font-weight:600;font-size:.9rem;transition:all .2s;border:none;cursor:pointer;text-decoration:none;justify-content:center}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover:not(:disabled){background:var(--accent2);text-decoration:none}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
+.btn-outline{border:1px solid var(--border);color:var(--text);background:transparent}
+.btn-outline:hover{border-color:var(--accent);text-decoration:none}
+.btn-danger{background:rgba(239,68,68,.12);color:#fca5a5;border:1px solid rgba(239,68,68,.3)}
+
+.wrap{max-width:960px;margin:0 auto;padding:7rem 1.5rem 4rem}
+.eyebrow{color:var(--accent2);font-size:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.8rem}
+h1{font-size:clamp(1.8rem,4vw,2.4rem);font-weight:800;line-height:1.15;margin-bottom:.6rem;color:#fff}
+.sub{color:var(--muted);font-size:1rem;margin-bottom:2rem}
+h2{font-size:1.25rem;font-weight:700;margin:2.2rem 0 1rem;color:#fff}
+
+.gate{max-width:480px;margin:0 auto;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem}
+label{display:block;font-size:.82rem;font-weight:600;color:var(--muted);margin-bottom:.45rem;text-transform:uppercase;letter-spacing:.04em}
+input[type=text],input[type=password]{width:100%;background:#0d0d14;border:1px solid var(--border);border-radius:9px;padding:.85rem 1rem;color:var(--text);font-size:.95rem;font-family:'JetBrains Mono',monospace;outline:none;transition:border-color .2s}
+input:focus{border-color:var(--accent)}
+input::placeholder{color:#4a4a5c}
+
+.dash{display:none}
+.dash.show{display:block}
+.gate.hide{display:none}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:2rem}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.2rem}
+.stat-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;margin-bottom:.5rem}
+.stat-value{font-size:1.8rem;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace;line-height:1.1}
+.stat-sub{font-size:.78rem;color:var(--muted);margin-top:.3rem}
+
+.usage-bar{height:8px;background:#1a1a24;border-radius:99px;margin-top:.8rem;overflow:hidden}
+.usage-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;transition:width .4s}
+.usage-fill.warn{background:linear-gradient(90deg,var(--orange),var(--red))}
+
+.info-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem;margin-bottom:1.5rem}
+.info-row{display:flex;justify-content:space-between;padding:.45rem 0;font-size:.9rem;border-bottom:1px solid #1a1a24}
+.info-row:last-child{border-bottom:none}
+.info-row span:first-child{color:var(--muted);font-weight:500}
+.info-row span:last-child{color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.85rem}
+
+.chart{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem;margin-bottom:1.5rem}
+.chart svg{width:100%;height:200px;display:block}
+
+.tier-badge{display:inline-block;padding:.2rem .7rem;border-radius:99px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;background:rgba(99,102,241,.15);color:var(--accent2);border:1px solid rgba(99,102,241,.3);margin-left:.5rem;vertical-align:middle}
+.tier-badge.free{background:rgba(136,136,160,.15);color:var(--muted);border-color:rgba(136,136,160,.3)}
+.tier-badge.pro{background:rgba(245,158,11,.15);color:var(--orange);border-color:rgba(245,158,11,.3)}
+
+.cta-card{background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(6,182,212,.08));border:1px solid rgba(99,102,241,.2);border-radius:14px;padding:1.6rem;margin-top:1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.cta-card h3{font-size:1.1rem;margin-bottom:.3rem}
+.cta-card p{color:var(--muted);font-size:.9rem;margin:0}
+.cta-card .actions{margin-left:auto;display:flex;gap:.5rem;flex-wrap:wrap}
+
+.msg{padding:.9rem 1rem;border-radius:9px;font-size:.88rem;margin-bottom:1rem;border:1px solid}
+.msg.err{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.3);color:#fca5a5}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.legal{font-size:.75rem;color:var(--muted);margin-top:1rem;line-height:1.5}
+
+footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--muted);font-size:.8rem;max-width:1100px;margin:3rem auto 0}
+@media(max-width:640px){nav .links a:not(.btn){display:none}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo" style="text-decoration:none;color:inherit"><div class="logo-shield"><img src="/static/logo-icon.png?v=1" alt="AgentShield"></div> AgentShield</a>
+  <div class="links">
+    <a href="/#features">Features</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/compare">Compare</a>
+    <a href="/status">Status</a>
+    <a href="https://api.agentshield.pro/docs" target="_blank">API Docs</a>
+    <a href="/signup" class="btn btn-primary">Get API Key</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="gate" id="gate">
+    <div class="eyebrow" style="text-align:center">Account</div>
+    <h1 style="text-align:center;font-size:1.6rem">View my usage</h1>
+    <p class="sub" style="text-align:center">Paste your API key to see today's usage, quota, and threat history. Your key stays in the request — nothing is stored in your browser.</p>
+    <div id="gate-msg"></div>
+    <form id="gate-form">
+      <label for="key">API key</label>
+      <input type="password" id="key" placeholder="ask_..." required autocomplete="off" spellcheck="false" />
+      <button type="submit" class="btn btn-primary" style="width:100%;margin-top:1rem" id="gate-btn">Load my account</button>
+    </form>
+    <p class="legal" style="text-align:center">No key yet? <a href="/signup">Get one free (100/day)</a>.</p>
+  </div>
+
+  <div class="dash" id="dash">
+    <div class="eyebrow">My Account</div>
+    <h1>Usage Dashboard <span class="tier-badge" id="tier-badge">free</span></h1>
+    <p class="sub" id="account-sub">Daily quota and threat history for <code id="key-prefix"></code>.</p>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-label">Today's usage</div>
+        <div class="stat-value" id="s-today">—</div>
+        <div class="stat-sub" id="s-today-sub">of daily quota</div>
+        <div class="usage-bar"><div class="usage-fill" id="usage-fill" style="width:0%"></div></div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Remaining today</div>
+        <div class="stat-value" id="s-remain">—</div>
+        <div class="stat-sub">Resets at midnight UTC</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Total requests</div>
+        <div class="stat-value" id="s-total">—</div>
+        <div class="stat-sub">Since key creation</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Threats caught</div>
+        <div class="stat-value" id="s-threats" style="color:var(--green)">—</div>
+        <div class="stat-sub" id="s-threats-sub">Attacks blocked</div>
+      </div>
+    </div>
+
+    <h2>Last 14 days</h2>
+    <div class="chart">
+      <svg viewBox="0 0 800 200" id="chart" preserveAspectRatio="none"></svg>
+      <div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-top:.5rem">
+        <span>14 days ago</span>
+        <span style="display:flex;gap:1rem">
+          <span><span style="display:inline-block;width:10px;height:10px;background:var(--accent2);border-radius:2px;margin-right:.3rem"></span>calls</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:var(--red);border-radius:2px;margin-right:.3rem"></span>threats</span>
+        </span>
+        <span>today</span>
+      </div>
+    </div>
+
+    <h2>Account details</h2>
+    <div class="info-card">
+      <div class="info-row"><span>Key prefix</span><span id="i-prefix"></span></div>
+      <div class="info-row"><span>Name</span><span id="i-name"></span></div>
+      <div class="info-row"><span>Email</span><span id="i-email"></span></div>
+      <div class="info-row"><span>Tier</span><span id="i-tier"></span></div>
+      <div class="info-row"><span>Daily limit</span><span id="i-limit"></span></div>
+      <div class="info-row"><span>Created</span><span id="i-created"></span></div>
+      <div class="info-row"><span>Last used</span><span id="i-last"></span></div>
+    </div>
+
+    <div class="cta-card" id="upgrade-cta">
+      <div>
+        <h3>Need more throughput?</h3>
+        <p>Developer: 5K/day for $29 · Pro: 50K/day for $99.</p>
+      </div>
+      <div class="actions">
+        <a href="/#pricing" class="btn btn-primary">See Pricing</a>
+        <a href="#" class="btn btn-outline" onclick="logout();return false">Sign out</a>
+      </div>
+    </div>
+
+    <p class="legal">Nothing about your key is saved in your browser. Every refresh re-authenticates. If you lose your key, <a href="/signup">sign up again</a> with the same email — we'll deactivate the old one on request.</p>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2026 AgentShield by Eigenart Filmproduktion &mdash; Frankfurt, Germany</p>
+  <p style="margin-top:.5rem"><a href="/blog">Blog</a> &middot; <a href="/benchmark">Benchmark</a> &middot; <a href="/compare">Compare</a> &middot; <a href="/status">Status</a> &middot; <a href="/account">Account</a> &middot; <a href="https://api.agentshield.pro/docs">API Docs</a> &middot; <a href="mailto:info@leonforte.de">Contact</a></p>
+  <p style="margin-top:.5rem"><a href="/terms">Terms</a> &middot; <a href="/privacy">Privacy</a> &middot; <a href="/refund">Refund Policy</a></p>
+</footer>
+
+<script>
+let currentKey = sessionStorage.getItem('as_key') || '';
+
+const gate = document.getElementById('gate');
+const dash = document.getElementById('dash');
+const gateForm = document.getElementById('gate-form');
+const gateMsg = document.getElementById('gate-msg');
+const gateBtn = document.getElementById('gate-btn');
+
+function fmt(n){ return n===null||n===undefined||n<0 ? '—' : Number(n).toLocaleString() }
+function fmtDate(s){ if(!s) return '—'; const d=new Date(s.replace(' ','T')+'Z'); return isNaN(d)?s:d.toLocaleString() }
+
+async function loadAccount(key){
+  const r = await fetch('/api/account', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({api_key: key})
+  });
+  const data = await r.json();
+  if (!r.ok){
+    const msg = (data.detail && data.detail.message) || (data.detail && typeof data.detail==='string' ? data.detail : 'Load failed.');
+    throw new Error(msg);
+  }
+  return data;
+}
+
+function render(data){
+  document.getElementById('key-prefix').textContent = data.prefix+'…';
+  document.getElementById('tier-badge').textContent = data.tier;
+  document.getElementById('tier-badge').className = 'tier-badge '+data.tier;
+
+  const limit = data.daily_limit;
+  const used = data.today_used;
+  const pct = limit>0 ? Math.min(100, (used/limit)*100) : 0;
+  document.getElementById('s-today').textContent = fmt(used);
+  document.getElementById('s-today-sub').textContent = limit>0 ? ('of '+fmt(limit)+' daily') : 'unlimited tier';
+  document.getElementById('s-remain').textContent = limit>0 ? fmt(data.today_remaining) : '∞';
+  document.getElementById('s-total').textContent = fmt(data.total_calls);
+  document.getElementById('s-threats').textContent = fmt(data.total_threats);
+  const threatPct = data.total_calls>0 ? ((data.total_threats/data.total_calls)*100).toFixed(2) : '0';
+  document.getElementById('s-threats-sub').textContent = threatPct+'% threat rate';
+
+  const fill = document.getElementById('usage-fill');
+  fill.style.width = pct+'%';
+  fill.className = pct>80 ? 'usage-fill warn' : 'usage-fill';
+
+  document.getElementById('i-prefix').textContent = data.prefix+'…';
+  document.getElementById('i-name').textContent = data.name || '—';
+  document.getElementById('i-email').textContent = data.email || '—';
+  document.getElementById('i-tier').textContent = data.tier;
+  document.getElementById('i-limit').textContent = limit>0 ? fmt(limit)+'/day' : 'unlimited';
+  document.getElementById('i-created').textContent = fmtDate(data.created_at);
+  document.getElementById('i-last').textContent = fmtDate(data.last_used);
+
+  if (data.tier!=='free'){
+    document.getElementById('upgrade-cta').innerHTML = '<div><h3>Thanks for being on '+data.tier+' tier!</h3><p>Need more, or want to go enterprise? Contact us.</p></div><div class="actions"><a href="mailto:info@leonforte.de" class="btn btn-primary">Talk to us</a><a href="#" class="btn btn-outline" onclick="logout();return false">Sign out</a></div>';
+  }
+
+  // chart
+  drawChart(data.daily_history||[]);
+}
+
+function drawChart(history){
+  const svg = document.getElementById('chart');
+  svg.innerHTML = '';
+  if (!history.length){
+    const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x','400'); t.setAttribute('y','100');
+    t.setAttribute('text-anchor','middle');
+    t.setAttribute('fill','#8888a0');
+    t.setAttribute('font-size','14');
+    t.textContent='No usage yet — make your first API call.';
+    svg.appendChild(t);
+    return;
+  }
+  // build 14-day array
+  const days=[]; const today=new Date(); today.setUTCHours(0,0,0,0);
+  for(let i=13;i>=0;i--){
+    const d=new Date(today); d.setUTCDate(d.getUTCDate()-i);
+    const iso = d.toISOString().slice(0,10);
+    const hit = history.find(h=>h.day===iso);
+    days.push({day:iso, calls:hit?hit.calls:0, threats:hit?hit.threats:0});
+  }
+  const W=800, H=200, pad=20;
+  const barW = (W-pad*2)/14;
+  const max = Math.max(10, ...days.map(d=>d.calls));
+  days.forEach((d,i)=>{
+    const x = pad + i*barW;
+    const barH = (d.calls/max)*(H-pad*2);
+    const y = H-pad-barH;
+    const r = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    r.setAttribute('x', x+2);
+    r.setAttribute('y', y);
+    r.setAttribute('width', Math.max(4, barW-4));
+    r.setAttribute('height', Math.max(1, barH));
+    r.setAttribute('fill', 'url(#grad)');
+    r.setAttribute('rx','2');
+    const title = document.createElementNS('http://www.w3.org/2000/svg','title');
+    title.textContent = d.day+': '+d.calls+' calls, '+d.threats+' threats';
+    r.appendChild(title);
+    svg.appendChild(r);
+    if (d.threats>0){
+      const th = document.createElementNS('http://www.w3.org/2000/svg','rect');
+      const tH = (d.threats/max)*(H-pad*2);
+      th.setAttribute('x', x+2);
+      th.setAttribute('y', H-pad-tH);
+      th.setAttribute('width', Math.max(4, barW-4));
+      th.setAttribute('height', Math.max(1, tH));
+      th.setAttribute('fill', '#ef4444');
+      th.setAttribute('rx','2');
+      svg.appendChild(th);
+    }
+  });
+  const defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
+  defs.innerHTML = '<linearGradient id="grad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#818cf8"/><stop offset="1" stop-color="#6366f1"/></linearGradient>';
+  svg.insertBefore(defs, svg.firstChild);
+}
+
+async function showDashFor(key){
+  gateBtn.disabled = true;
+  gateBtn.innerHTML = '<span class="spinner"></span> Loading…';
+  try{
+    const data = await loadAccount(key);
+    currentKey = key;
+    sessionStorage.setItem('as_key', key);
+    gate.classList.add('hide');
+    dash.classList.add('show');
+    render(data);
+  }catch(e){
+    gateMsg.innerHTML = '<div class="msg err">'+e.message+'</div>';
+    gateBtn.disabled = false;
+    gateBtn.textContent = 'Load my account';
+  }
+}
+
+gateForm.addEventListener('submit', (e)=>{
+  e.preventDefault();
+  gateMsg.innerHTML='';
+  const k = document.getElementById('key').value.trim();
+  if (!k.startsWith('ask_')){
+    gateMsg.innerHTML = '<div class="msg err">API keys start with ask_</div>';
+    return;
+  }
+  showDashFor(k);
+});
+
+function logout(){
+  sessionStorage.removeItem('as_key');
+  currentKey='';
+  dash.classList.remove('show');
+  gate.classList.remove('hide');
+  document.getElementById('key').value='';
+  gateBtn.disabled=false;
+  gateBtn.textContent='Load my account';
+}
+
+// auto-login if session has a key
+if (currentKey){
+  showDashFor(currentKey);
+}
+</script>
+
+</body>
+</html>

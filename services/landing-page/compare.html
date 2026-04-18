@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgentShield vs Lakera, Rebuff, LLM Guard, NeMo — Honest Comparison</title>
+<meta name="description" content="Honest feature + latency + pricing comparison of AgentShield vs Lakera Guard, Rebuff, LLM Guard, and NVIDIA NeMo Guardrails. No cherry-picking.">
+<meta property="og:title" content="AgentShield vs Lakera, Rebuff, LLM Guard, NeMo — Honest Comparison">
+<meta property="og:description" content="Features, F1, p95 latency, pricing, self-hosted option — side by side.">
+<meta property="og:url" content="https://agentshield.pro/compare">
+<meta property="og:image" content="https://agentshield.pro/static/og/compare.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://agentshield.pro/static/og/compare.png">
+<link rel="canonical" href="https://agentshield.pro/compare">
+<link rel="icon" href="/static/logo-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0f;--surface:#12121a;--border:#1e1e2e;--text:#e2e2e8;--muted:#8888a0;--accent:#6366f1;--accent2:#818cf8;--green:#22c55e;--red:#ef4444;--orange:#f59e0b;--cyan:#06b6d4;--yellow:#eab308}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+a{color:var(--accent2);text-decoration:none}
+a:hover{text-decoration:underline}
+code,pre{font-family:'JetBrains Mono',monospace}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:blur(20px);background:rgba(10,10,15,.85);border-bottom:1px solid var(--border);padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:1.2rem;font-weight:700;display:flex;align-items:center;gap:.5rem}
+.logo-shield{width:28px;height:28px;border-radius:6px;overflow:hidden}.logo-shield img{width:100%;height:100%;object-fit:cover}
+nav .links{display:flex;gap:2rem;align-items:center}
+nav .links a{color:var(--muted);font-size:.9rem;font-weight:500;transition:color .2s}
+nav .links a:hover{color:var(--text);text-decoration:none}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1.4rem;border-radius:8px;font-weight:600;font-size:.9rem;transition:all .2s;border:none;cursor:pointer}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent2);text-decoration:none}
+.btn-outline{border:1px solid var(--border);color:var(--text);background:transparent}
+.btn-outline:hover{border-color:var(--accent);text-decoration:none}
+
+.wrap{max-width:1150px;margin:0 auto;padding:7rem 2rem 4rem}
+.eyebrow{color:var(--accent2);font-size:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.8rem}
+h1{font-size:clamp(2rem,4.5vw,3.2rem);font-weight:800;line-height:1.15;margin-bottom:1rem;background:linear-gradient(135deg,#fff 0%,var(--accent2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sub{color:var(--muted);font-size:1.05rem;max-width:720px;margin-bottom:2.5rem}
+h2{font-size:1.6rem;font-weight:700;margin:3rem 0 1rem;color:#fff}
+h3{font-size:1.15rem;font-weight:700;margin:1.5rem 0 .6rem;color:#fff}
+p{color:var(--text);margin-bottom:1rem}
+.muted{color:var(--muted);font-size:.88rem}
+
+.intro-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.6rem;margin-bottom:2rem}
+.intro-box p{font-size:.95rem;margin:0}
+
+.matrix{overflow-x:auto;border:1px solid var(--border);border-radius:12px;background:var(--surface);margin-bottom:1.5rem}
+table{width:100%;border-collapse:collapse;font-size:.88rem;min-width:760px}
+th,td{padding:.85rem 1rem;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+thead th{background:#14141e;color:var(--muted);font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;position:sticky;top:0}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:rgba(99,102,241,.03)}
+td.row-label{color:var(--muted);font-weight:600;white-space:nowrap}
+td.us{background:rgba(99,102,241,.08);color:#fff}
+td.us strong{color:var(--accent2)}
+.yes{color:var(--green)}.no{color:var(--red)}.partial{color:var(--yellow)}
+.num{font-family:'JetBrains Mono',monospace;font-size:.85rem}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin:1rem 0 2rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.3rem}
+.card h4{font-size:1rem;font-weight:700;margin-bottom:.5rem;color:#fff}
+.card p{color:var(--muted);font-size:.85rem;margin:0}
+.badge{display:inline-block;font-size:.7rem;font-weight:700;padding:.15rem .55rem;border-radius:99px;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.6rem}
+.badge.primary{background:rgba(99,102,241,.15);color:var(--accent2);border:1px solid rgba(99,102,241,.3)}
+.badge.neutral{background:#1a1a24;color:var(--muted);border:1px solid var(--border)}
+
+.caveat{background:#14141e;border-left:3px solid var(--yellow);border-radius:8px;padding:1.1rem 1.3rem;margin:1rem 0;font-size:.9rem;color:#d0d0dc}
+.caveat b{color:var(--yellow)}
+
+.cta-box{background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(6,182,212,.08));border:1px solid rgba(99,102,241,.2);border-radius:14px;padding:2rem;text-align:center;margin-top:3rem}
+.cta-box h3{font-size:1.4rem;margin-bottom:.5rem}
+.cta-box p{color:var(--muted);margin-bottom:1.5rem}
+
+footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--muted);font-size:.8rem;max-width:1100px;margin:3rem auto 0}
+@media(max-width:640px){nav .links a:not(.btn){display:none}}
+</style>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "AgentShield vs Lakera, Rebuff, LLM Guard, NeMo — Honest Comparison",
+  "description": "Honest feature, latency, and pricing comparison of AgentShield vs Lakera Guard, Rebuff, LLM Guard, and NVIDIA NeMo Guardrails.",
+  "image": "https://agentshield.pro/static/og/compare.png",
+  "url": "https://agentshield.pro/compare",
+  "isPartOf": { "@type": "WebSite", "url": "https://agentshield.pro/", "name": "AgentShield" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://agentshield.pro/" },
+    { "@type": "ListItem", "position": 2, "name": "Compare", "item": "https://agentshield.pro/compare" }
+  ]
+}
+</script>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo" style="text-decoration:none;color:inherit"><div class="logo-shield"><img src="/static/logo-icon.png?v=1" alt="AgentShield"></div> AgentShield</a>
+  <div class="links">
+    <a href="/#features">Features</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/compare">Compare</a>
+    <a href="/benchmark">Benchmark</a>
+    <a href="/blog">Blog</a>
+    <a href="https://api.agentshield.pro/docs" target="_blank">API Docs</a>
+    <a href="/signup" class="btn btn-primary">Get API Key</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="eyebrow">Honest Comparison · Updated April 2026</div>
+  <h1>AgentShield vs Lakera, Rebuff, LLM&nbsp;Guard &amp; NeMo</h1>
+  <p class="sub">
+    We built this page because every other comparison out there is written by a vendor trying to win.
+    This one is written by us — and we still lose in some rows. Data here comes from each product's public docs,
+    our own benchmark (see <a href="/benchmark">/benchmark</a>), and reproducible tests. If something is wrong or out of date,
+    <a href="mailto:info@leonforte.de">email us</a> and we'll fix it.
+  </p>
+
+  <div class="intro-box">
+    <p><strong>TL;DR.</strong> AgentShield wins on latency (p50 ≈ 2.4&nbsp;ms), pricing (free tier + $29 entry), and deployment simplicity (one HTTPS call, no LLM dependency). Lakera Guard wins on enterprise features (RBAC, audit exports, EU private deployment). Rebuff and LLM&nbsp;Guard are strong open-source options if you want to self-host. NeMo Guardrails is a different beast entirely — a rules DSL, not a classifier — and is best used <em>with</em> something like AgentShield, not instead of it.</p>
+  </div>
+
+  <h2>Feature matrix</h2>
+  <div class="matrix">
+    <table>
+      <thead>
+        <tr>
+          <th>&nbsp;</th>
+          <th style="color:var(--accent2)">AgentShield</th>
+          <th>Lakera Guard</th>
+          <th>Rebuff</th>
+          <th>LLM Guard</th>
+          <th>NeMo Guardrails</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="row-label">Type</td>
+          <td class="us">Hosted API (classifier)</td>
+          <td>Hosted API (classifier)</td>
+          <td>Library + optional hosted</td>
+          <td>Self-hosted library</td>
+          <td>Self-hosted DSL framework</td>
+        </tr>
+        <tr>
+          <td class="row-label">Free tier</td>
+          <td class="us"><span class="yes">✓</span> 100 req/day, no card</td>
+          <td><span class="partial">trial</span> 14 days</td>
+          <td><span class="yes">✓</span> OSS, self-host</td>
+          <td><span class="yes">✓</span> OSS, self-host</td>
+          <td><span class="yes">✓</span> OSS, self-host</td>
+        </tr>
+        <tr>
+          <td class="row-label">Entry paid tier</td>
+          <td class="us"><strong>$29/mo · 5K/day</strong></td>
+          <td>Enterprise (talk to sales)</td>
+          <td>Free (self-host)</td>
+          <td>Free (self-host)</td>
+          <td>Free (self-host)</td>
+        </tr>
+        <tr>
+          <td class="row-label">p50 latency</td>
+          <td class="us"><strong class="num">2.44 ms</strong></td>
+          <td class="num">~30–50 ms<sup>*</sup></td>
+          <td class="num">LLM-dependent (~400 ms+)</td>
+          <td class="num">5–20 ms (self-host)</td>
+          <td class="num">LLM-dependent</td>
+        </tr>
+        <tr>
+          <td class="row-label">Published benchmark</td>
+          <td class="us"><span class="yes">✓</span> <a href="/benchmark">5,972 samples, F1&nbsp;0.921</a></td>
+          <td><span class="yes">✓</span> <a href="https://www.lakera.ai/pint-benchmark" target="_blank" rel="noopener">PINT (their own)</a></td>
+          <td><span class="partial">partial</span></td>
+          <td><span class="no">✗</span></td>
+          <td><span class="no">✗</span> (not a classifier)</td>
+        </tr>
+        <tr>
+          <td class="row-label">Open-source model</td>
+          <td class="us"><span class="partial">partial</span> MIT wrappers, weights proprietary</td>
+          <td><span class="no">✗</span></td>
+          <td><span class="yes">✓</span> MIT</td>
+          <td><span class="yes">✓</span> MIT</td>
+          <td><span class="yes">✓</span> Apache-2.0</td>
+        </tr>
+        <tr>
+          <td class="row-label">Self-hosted option</td>
+          <td class="us"><span class="partial">enterprise only</span></td>
+          <td><span class="partial">enterprise only</span></td>
+          <td><span class="yes">✓</span></td>
+          <td><span class="yes">✓</span></td>
+          <td><span class="yes">✓</span></td>
+        </tr>
+        <tr>
+          <td class="row-label">EU data residency</td>
+          <td class="us"><span class="yes">✓</span> Frankfurt, DE only</td>
+          <td><span class="yes">✓</span> Switzerland/EU</td>
+          <td><span class="yes">✓</span> self-host anywhere</td>
+          <td><span class="yes">✓</span> self-host anywhere</td>
+          <td><span class="yes">✓</span> self-host anywhere</td>
+        </tr>
+        <tr>
+          <td class="row-label">LLM dependency</td>
+          <td class="us"><span class="yes">✓</span> none, own classifier</td>
+          <td><span class="yes">✓</span> none</td>
+          <td><span class="no">✗</span> uses OpenAI</td>
+          <td><span class="partial">optional</span></td>
+          <td><span class="no">✗</span> LLM required</td>
+        </tr>
+        <tr>
+          <td class="row-label">PII redaction</td>
+          <td class="us"><span class="partial">roadmap Q2 2026</span></td>
+          <td><span class="yes">✓</span></td>
+          <td><span class="no">✗</span></td>
+          <td><span class="yes">✓</span></td>
+          <td><span class="partial">via plugins</span></td>
+        </tr>
+        <tr>
+          <td class="row-label">Audit logs / export</td>
+          <td class="us"><span class="partial">usage log only</span></td>
+          <td><span class="yes">✓</span> full audit + SOC2</td>
+          <td><span class="no">✗</span></td>
+          <td><span class="no">✗</span></td>
+          <td><span class="no">✗</span></td>
+        </tr>
+        <tr>
+          <td class="row-label">SOC 2 / ISO 27001</td>
+          <td class="us"><span class="no">✗</span> (SOC 2 Type I targeted Q4 2026)</td>
+          <td><span class="yes">✓</span> SOC 2 Type II</td>
+          <td><span class="no">✗</span></td>
+          <td><span class="no">✗</span></td>
+          <td><span class="no">✗</span></td>
+        </tr>
+        <tr>
+          <td class="row-label">SDKs</td>
+          <td class="us">Python (cURL works everywhere)</td>
+          <td>Python, JS, Go</td>
+          <td>Python, JS</td>
+          <td>Python</td>
+          <td>Python</td>
+        </tr>
+        <tr>
+          <td class="row-label">LangChain / LlamaIndex</td>
+          <td class="us"><span class="partial">via HTTP</span></td>
+          <td><span class="yes">✓</span> official</td>
+          <td><span class="yes">✓</span> official</td>
+          <td><span class="partial">via HTTP</span></td>
+          <td><span class="yes">✓</span> official</td>
+        </tr>
+        <tr>
+          <td class="row-label">Public status page</td>
+          <td class="us"><span class="yes">✓</span> <a href="/status">/status</a></td>
+          <td><span class="yes">✓</span></td>
+          <td><span class="no">n/a</span> (self-host)</td>
+          <td><span class="no">n/a</span> (self-host)</td>
+          <td><span class="no">n/a</span> (self-host)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="muted"><sup>*</sup> Lakera latency is our own measurement against their public endpoint from Frankfurt, Apr 2026. Their official docs don't publish a p50. Your mileage will vary based on region.</p>
+
+  <h2>When each one wins</h2>
+  <div class="cards">
+    <div class="card">
+      <span class="badge primary">AgentShield</span>
+      <h4>Fastest hosted option</h4>
+      <p>You ship a user-facing app, you need sub-5 ms classification on every turn, and $29/mo beats what you'd pay to self-host the same throughput on a GPU box.</p>
+    </div>
+    <div class="card">
+      <span class="badge neutral">Lakera Guard</span>
+      <h4>Enterprise-grade</h4>
+      <p>You need SOC 2 Type II signed, SSO, RBAC, detailed audit exports, and you have procurement time to navigate custom contracts.</p>
+    </div>
+    <div class="card">
+      <span class="badge neutral">Rebuff</span>
+      <h4>OSS, OpenAI-ecosystem</h4>
+      <p>You're already deep on OpenAI, you want an MIT-licensed library you can audit, and LLM-based classification latency is acceptable for your use case.</p>
+    </div>
+    <div class="card">
+      <span class="badge neutral">LLM Guard</span>
+      <h4>OSS, self-hosted, broad</h4>
+      <p>You want one library that does injection + PII + toxicity + secrets detection, and you're ok self-hosting on your own hardware.</p>
+    </div>
+    <div class="card">
+      <span class="badge neutral">NeMo Guardrails</span>
+      <h4>Rules-first orchestration</h4>
+      <p>You want to declaratively define conversational flows, forbidden topics, and routing logic in a DSL — <em>on top of</em> a classifier like AgentShield, not instead of it.</p>
+    </div>
+  </div>
+
+  <div class="caveat">
+    <b>What we're honest about.</b> AgentShield doesn't yet have SOC 2, native LangChain integration, PII redaction, or self-hosted packaging. Those are Q2–Q4 2026. If any of them is a hard requirement today, one of the others above is probably a better fit right now. We'd rather you pick the right tool than regret the wrong one.
+  </div>
+
+  <h2>Methodology &amp; sources</h2>
+  <p>Feature rows come from each product's public documentation as of April 2026. Pricing reflects list prices — no volume discounts or promo codes. Latency for AgentShield is p50 from our public <a href="/benchmark">5,972-sample benchmark</a>. Latency for competitors is either (a) what's published in their docs or (b) our own measurement against their public endpoints — marked with an asterisk where measured. If a cell says "partial", it means the capability exists but with constraints we felt were worth flagging.</p>
+  <p><strong>Disagree with a row?</strong> Email <a href="mailto:info@leonforte.de">info@leonforte.de</a> with a link to the contradicting source and we'll update within 48 hours.</p>
+
+  <div class="cta-box">
+    <h3>Try the fastest one yourself</h3>
+    <p>100 requests/day free, no credit card. If AgentShield doesn't fit, the other four are great too — we mean it.</p>
+    <a href="/signup" class="btn btn-primary">Get Free API Key →</a>
+    <a href="/benchmark" class="btn btn-outline" style="margin-left:.5rem">See the Benchmark</a>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2026 AgentShield by Eigenart Filmproduktion &mdash; Frankfurt, Germany</p>
+  <p style="margin-top:.5rem"><a href="/blog">Blog</a> &middot; <a href="/benchmark">Benchmark</a> &middot; <a href="/compare">Compare</a> &middot; <a href="/status">Status</a> &middot; <a href="/account">Account</a> &middot; <a href="https://api.agentshield.pro/docs">API Docs</a> &middot; <a href="mailto:info@leonforte.de">Contact</a></p>
+  <p style="margin-top:.5rem"><a href="/terms">Terms</a> &middot; <a href="/privacy">Privacy</a> &middot; <a href="/refund">Refund Policy</a></p>
+</footer>
+
+</body>
+</html>

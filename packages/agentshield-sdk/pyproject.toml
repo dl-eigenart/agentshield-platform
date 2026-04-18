@@ -1,0 +1,63 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agentshield-sdk"
+version = "0.1.0"
+description = "Official Python SDK for AgentShield — prompt injection detection for LLM applications."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [
+    { name = "Eigenart Filmproduktion", email = "hello@agentshield.pro" },
+]
+keywords = ["llm", "security", "prompt-injection", "ai-safety", "agent", "guardrails"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "httpx>=0.24",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-asyncio>=0.21",
+    "respx>=0.20",
+    "mypy>=1.0",
+    "ruff>=0.1",
+]
+
+[project.urls]
+Homepage = "https://agentshield.pro"
+Documentation = "https://agentshield.pro/docs"
+Repository = "https://github.com/dl-eigenart/agentshield-platform"
+Changelog = "https://github.com/dl-eigenart/agentshield-platform/blob/main/packages/agentshield-sdk/CHANGELOG.md"
+Issues = "https://github.com/dl-eigenart/agentshield-platform/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["agentshield"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"
+
+[tool.mypy]
+python_version = "3.8"
+strict = true

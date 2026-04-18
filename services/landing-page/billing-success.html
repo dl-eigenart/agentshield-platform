@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome to AgentShield — Payment Successful</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/static/logo-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0f;--surface:#12121a;--border:#1e1e2e;--text:#e2e2e8;--muted:#8888a0;--accent:#6366f1;--accent2:#818cf8;--green:#22c55e}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+a{color:var(--accent2);text-decoration:none}
+a:hover{text-decoration:underline}
+code,pre{font-family:'JetBrains Mono',monospace}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:blur(20px);background:rgba(10,10,15,.85);border-bottom:1px solid var(--border);padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:1.2rem;font-weight:700;display:flex;align-items:center;gap:.5rem}
+.logo-shield{width:28px;height:28px;border-radius:6px;overflow:hidden}.logo-shield img{width:100%;height:100%;object-fit:cover}
+nav .links{display:flex;gap:2rem;align-items:center}
+nav .links a{color:var(--muted);font-size:.9rem;font-weight:500;transition:color .2s}
+nav .links a:hover{color:var(--text);text-decoration:none}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.5rem;border-radius:8px;font-weight:600;font-size:.95rem;transition:all .2s;border:none;cursor:pointer;text-decoration:none;justify-content:center}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent2);text-decoration:none}
+.btn-outline{border:1px solid var(--border);color:var(--text);background:transparent}
+.btn-outline:hover{border-color:var(--accent);text-decoration:none}
+
+.wrap{max-width:560px;margin:0 auto;padding:8rem 1.5rem 4rem;text-align:center}
+.check{width:72px;height:72px;border-radius:50%;background:rgba(34,197,94,.15);border:2px solid var(--green);display:inline-flex;align-items:center;justify-content:center;margin-bottom:1.5rem;font-size:2rem;color:var(--green)}
+h1{font-size:clamp(1.8rem,4vw,2.4rem);font-weight:800;line-height:1.15;margin-bottom:.6rem;color:#fff}
+.sub{color:var(--muted);font-size:1.05rem;margin-bottom:2rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.6rem;margin-bottom:1.2rem;text-align:left}
+.card h3{font-size:1rem;font-weight:700;color:#fff;margin-bottom:.6rem;display:flex;align-items:center;gap:.5rem}
+.card p{color:var(--muted);font-size:.9rem}
+.step-num{display:inline-flex;width:26px;height:26px;background:var(--accent);color:#fff;border-radius:50%;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;flex-shrink:0}
+.actions{display:flex;gap:.8rem;flex-wrap:wrap;justify-content:center;margin-top:1.5rem}
+.actions .btn{flex:1;min-width:160px}
+.legal{font-size:.78rem;color:var(--muted);margin-top:1.5rem;line-height:1.5}
+footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--muted);font-size:.8rem;max-width:1100px;margin:3rem auto 0}
+@media(max-width:640px){nav .links a:not(.btn){display:none}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo" style="text-decoration:none;color:inherit"><div class="logo-shield"><img src="/static/logo-icon.png?v=1" alt="AgentShield"></div> AgentShield</a>
+  <div class="links">
+    <a href="/#features">Features</a>
+    <a href="/compare">Compare</a>
+    <a href="/status">Status</a>
+    <a href="https://api.agentshield.pro/docs" target="_blank">API Docs</a>
+    <a href="/account" class="btn btn-outline">Account</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="check">✓</div>
+  <h1>Payment successful</h1>
+  <p class="sub">Thanks for upgrading. Your new quota kicks in within 60 seconds of our webhook landing from Paddle.</p>
+
+  <div class="card">
+    <h3><span class="step-num">1</span> Check your inbox</h3>
+    <p>You'll receive a confirmation + receipt from Paddle, and a separate email from AgentShield if we needed to mint you a new API key. If you already have a free-tier key under the same email, it's been upgraded in place.</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="step-num">2</span> Verify your new tier</h3>
+    <p>Head to your account and paste your key — you should see <strong>dev (5,000/day)</strong> or <strong>pro (50,000/day)</strong> in the tier badge.</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="step-num">3</span> Ship it</h3>
+    <p>Your existing API key keeps working — same URL, same endpoint, higher limits. No code changes needed. If anything looks off, email <a href="mailto:info@leonforte.de">info@leonforte.de</a> and we'll fix it today.</p>
+  </div>
+
+  <div class="actions">
+    <a href="/account" class="btn btn-primary">Go to my account →</a>
+    <a href="https://api.agentshield.pro/docs" class="btn btn-outline" target="_blank">API Docs</a>
+  </div>
+
+  <p class="legal">Questions about billing, refunds, or invoices? See our <a href="/refund">Refund Policy</a> or email us. We reply within one business day.</p>
+</div>
+
+<footer>
+  <p>&copy; 2026 AgentShield by Eigenart Filmproduktion &mdash; Frankfurt, Germany</p>
+  <p style="margin-top:.5rem"><a href="/blog">Blog</a> &middot; <a href="/benchmark">Benchmark</a> &middot; <a href="/compare">Compare</a> &middot; <a href="/status">Status</a> &middot; <a href="/account">Account</a> &middot; <a href="https://api.agentshield.pro/docs">API Docs</a> &middot; <a href="mailto:info@leonforte.de">Contact</a></p>
+  <p style="margin-top:.5rem"><a href="/terms">Terms</a> &middot; <a href="/privacy">Privacy</a> &middot; <a href="/refund">Refund Policy</a></p>
+</footer>
+
+</body>
+</html>
