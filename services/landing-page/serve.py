@@ -224,6 +224,13 @@ async def robots():
     return PlainTextResponse(body, media_type="text/plain")
 
 
+@app.get("/llms.txt")
+async def llms_txt():
+    """LLM-facing discovery document. See https://llmstxt.org for the emerging spec.
+    Served as text/plain so crawlers (and agents doing web_fetch) get a clean read."""
+    return FileResponse(STATIC_DIR / "llms.txt", media_type="text/plain; charset=utf-8")
+
+
 @app.get("/sitemap.xml")
 async def sitemap():
     urls = [
