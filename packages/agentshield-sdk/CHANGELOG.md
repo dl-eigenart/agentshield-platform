@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the `agentshield-guard` Python package will be documented in this file.
+All notable changes to the `agentshield` Python SDK will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -15,7 +15,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Exception hierarchy: `AgentShieldError`, `AuthenticationError`,
   `RateLimitError` (with `retry_after`), `APIError`, `AgentShieldTimeoutError`.
 - Configuration via kwargs or `AGENTSHIELD_API_KEY` / `AGENTSHIELD_BASE_URL` env vars.
-
-### Notes
-- Distribution name on PyPI: `agentshield-guard`.
-- Import name remains `agentshield` (e.g. `from agentshield import AgentShield`).

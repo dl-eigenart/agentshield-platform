@@ -1,35 +1,46 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling>=1.18"]
 build-backend = "hatchling.build"
 
 [project]
-name = "agentshield-guard"
-version = "0.1.1"
-description = "Official Python SDK for AgentShield — prompt injection detection for LLM applications."
+name = "agentshield-sdk"
+version = "0.1.0"
+description = "Official Python SDK for AgentShield — runtime gateway for real-time prompt-injection and jailbreak detection in LLM agents."
 readme = "README.md"
 requires-python = ">=3.8"
 license = { text = "MIT" }
 authors = [
-    { name = "Eigenart Filmproduktion", email = "hello@agentshield.pro" },
+    { name = "Eigenart Filmproduktion", email = "eigenart.filmproduction@gmail.com" },
 ]
-keywords = ["llm", "security", "prompt-injection", "ai-safety", "agent", "guardrails"]
+keywords = [
+    "agentshield",
+    "prompt-injection",
+    "llm-security",
+    "ai-security",
+    "guardrails",
+    "jailbreak-detection",
+    "runtime-gateway",
+    "real-time-classifier",
+    "llm-firewall",
+]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
     "Topic :: Security",
     "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
 ]
 dependencies = [
-    "httpx>=0.24",
+    "httpx>=0.24,<1.0",
 ]
 
 [project.optional-dependencies]
@@ -43,21 +54,35 @@ dev = [
 
 [project.urls]
 Homepage = "https://agentshield.pro"
-Documentation = "https://agentshield.pro/docs"
-Repository = "https://github.com/dl-eigenart/agentshield-platform"
-Changelog = "https://github.com/dl-eigenart/agentshield-platform/blob/main/packages/agentshield-sdk/CHANGELOG.md"
+Documentation = "https://agentshield.pro/#docs"
+Source = "https://github.com/dl-eigenart/agentshield-platform"
 Issues = "https://github.com/dl-eigenart/agentshield-platform/issues"
+Changelog = "https://github.com/dl-eigenart/agentshield-platform/blob/main/packages/agentshield-sdk/CHANGELOG.md"
 
 [tool.hatch.build.targets.wheel]
 packages = ["agentshield"]
 
+[tool.hatch.build.targets.sdist]
+include = [
+    "/agentshield",
+    "/README.md",
+    "/LICENSE",
+    "/CHANGELOG.md",
+    "/tests",
+]
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.mypy]
+python_version = "3.9"
+strict = true
+warn_unused_ignores = true
 
 [tool.ruff]
 line-length = 100
 target-version = "py38"
 
-[tool.mypy]
-python_version = "3.8"
-strict = true
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "UP"]

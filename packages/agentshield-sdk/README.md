@@ -1,16 +1,16 @@
 # AgentShield — Python SDK
 
-Official Python client for the [AgentShield](https://agentshield.pro) prompt-injection detection API.
+Official Python client for the [AgentShield](https://agentshield.pro) **runtime gateway** — real-time prompt-injection, jailbreak, and data-exfiltration detection for LLM agents.
 
-AgentShield is a fast, low-latency classifier that flags prompt-injection, jailbreak, and data-exfiltration attempts before they reach your LLM or agent. This SDK wraps the public `/v1/classify` endpoint with sync and async clients, typed responses, and clean exceptions.
+AgentShield is a low-latency runtime classifier (p50 ~2.4 ms) that flags adversarial text on every request — before it reaches your LLM. Unlike pre-deployment audit tools that scan your prompts offline, AgentShield sits in the hot path and scores each untrusted input as the agent runs. This SDK wraps the public `/v1/classify` endpoint with sync and async clients, typed responses, and clean exceptions.
 
 ## Install
 
 ```bash
-pip install agentshield-guard
+pip install agentshield-sdk
 ```
 
-Requires Python 3.8+.
+> The distribution name on PyPI is **`agentshield-sdk`**; the import name stays `agentshield`. Requires Python 3.8+.
 
 ## Quickstart
 
