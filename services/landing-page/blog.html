@@ -230,7 +230,7 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:v
 
   <p>Each attack was catchable by <strong>multiple layers</strong>. That's the point. Single-layer defenses have single points of failure. AgentShield's 6 layers mean an attacker would need to simultaneously bypass input normalization, pattern matching, semantic classification, output filtering, policy enforcement, and audit logging.</p>
 
-  <p>In our evaluation of 190 adversarial samples across 18 languages — including encoding tricks, multi-language injection, social engineering, and compound multi-part attacks — <strong>zero bypasses were achieved</strong>.</p>
+  <p>In our public benchmark against <strong>5,972 samples</strong> drawn from six prompt-injection datasets (gandalf, safeguard, deepset, spml, jackhhao, pint), AgentShield hits F1 <strong>0.921</strong> and recall <strong>93.6%</strong> at p50 <strong>2.44 ms</strong> / p95 <strong>3.80 ms</strong>. Full numbers — including the failure modes where the classifier struggles — are on the <a href="/benchmark">benchmark page</a>.</p>
 
   <h2>What This Means for You</h2>
 
@@ -242,7 +242,7 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:v
 
   <div class="cta-box">
     <h2>Try AgentShield</h2>
-    <p>Free API key in 30 seconds. No credit card. 190/190 eval score, 1.6ms latency.</p>
+    <p>Free API key in 30 seconds. No credit card. F1 0.921 across 5,972 public samples, p50 2.44 ms.</p>
 
     <div class="code-block" style="text-align:left;margin:1rem 0">
 <pre><span class="cmd">curl</span> <span class="flag">-X POST</span> <span class="url">https://api.agentshield.pro/v1/classify</span> \

@@ -167,7 +167,7 @@ def og_card(
     <circle cx="6" cy="-5" r="5" fill="{BRAND_GREEN}"/>
     <text x="22" y="0" fill="{BRAND_MUTED}"
           font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="500">
-      agentshield.dev
+      agentshield.pro
     </text>
     <text x="1040" y="0" fill="{BRAND_MUTED}" text-anchor="end"
           font-family="'JetBrains Mono', monospace" font-size="15" font-weight="500"
@@ -180,45 +180,45 @@ def og_card(
 
 
 CARDS: dict[str, dict] = {
-    "og-default": dict(
+    "default": dict(
         eyebrow="Prompt-Injection Detection API",
         title="Stop prompt injections\nbefore they hit your LLM.",
-        subtitle="Sub-20ms classifier · 99.4% recall · 100 free requests/day.",
+        subtitle="p50 2.44 ms · F1 0.921 on 5,972 public samples · 100 free requests/day.",
         accent_chip="AgentShield · v1",
     ),
-    "og-benchmark": dict(
+    "benchmark": dict(
         eyebrow="Benchmark Report · April 2026",
-        title="99.4% recall across\n4 public datasets.",
-        subtitle="Tested on 12,000 prompts. Median latency 14ms. Full methodology online.",
+        title="F1 0.921 across\n6 public datasets.",
+        subtitle="5,972 samples · p50 2.44 ms · p95 3.80 ms · Full methodology online.",
         accent_chip="Benchmark · Public",
-        stat=("99.4%", "Recall"),
+        stat=("0.921", "F1 · 5,972 samples"),
     ),
-    "og-blog": dict(
+    "blog": dict(
         eyebrow="AgentShield Blog",
         title="Writing about\nLLM security.",
         subtitle="Benchmarks, threat models, and lessons from shipping prompt-injection defenses.",
         accent_chip="Blog",
     ),
-    "og-compare": dict(
+    "compare": dict(
         eyebrow="Compare · Independent view",
         title="AgentShield vs.\nthe field.",
         subtitle="Latency, recall, price, deployment — side by side. No logos in tier, just data.",
         accent_chip="Comparison",
     ),
-    "og-status": dict(
+    "status": dict(
         eyebrow="Live System Status",
         title="Uptime, latency,\nand recent checks.",
         subtitle="Updated every 60 seconds · Frankfurt region · 40-day history window.",
         accent_chip="Status · Live",
         stat=("99.98%", "30-day uptime"),
     ),
-    "og-signup": dict(
+    "signup": dict(
         eyebrow="Get an API key",
         title="Free tier.\nNo credit card.",
         subtitle="100 classifications/day · upgrade to 50,000/day when you need it.",
         accent_chip="Sign up · Free",
     ),
-    "og-pricing": dict(
+    "pricing": dict(
         eyebrow="Pricing · Simple tiers",
         title="Free, Dev, Pro,\nor Enterprise.",
         subtitle="Start free. Scale to 50,000/day for $99. Self-host when you outgrow us.",
@@ -240,6 +240,13 @@ def main() -> None:
             output_height=630,
         )
         print(f"wrote {svg_path.name} + {png_path.name}  ({os.path.getsize(png_path)} bytes)")
+
+    # index.html references /static/og-image.png (top-level, not in og/).
+    # Mirror the default card there so both URLs serve the same image.
+    default_png = OUT_DIR / "default.png"
+    top_level_png = HERE / "og-image.png"
+    top_level_png.write_bytes(default_png.read_bytes())
+    print(f"wrote {top_level_png.name}  ({os.path.getsize(top_level_png)} bytes)")
 
 
 if __name__ == "__main__":

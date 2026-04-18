@@ -32,7 +32,7 @@ DEMO_API_KEY = os.getenv("AGENTSHIELD_DEMO_API_KEY", "")
 ADMIN_KEY = os.getenv("AGENTSHIELD_ADMIN_KEY", "")
 SITE_URL = os.getenv("AGENTSHIELD_SITE_URL", "https://agentshield.pro")
 
-# SMTP (reads SMTP_* from env — configured in your deployment)
+# SMTP (reads SMTP_* from env — share billing.env on agents-pc via EnvironmentFile)
 SMTP_HOST = os.getenv("SMTP_HOST", "")
 SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
 SMTP_USER = os.getenv("SMTP_USER", "")

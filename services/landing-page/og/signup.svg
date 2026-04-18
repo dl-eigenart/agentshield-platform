@@ -80,7 +80,7 @@
     <circle cx="6" cy="-5" r="5" fill="#22c55e"/>
     <text x="22" y="0" fill="#a1a1aa"
           font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="500">
-      agentshield.dev
+      agentshield.pro
     </text>
     <text x="1040" y="0" fill="#a1a1aa" text-anchor="end"
           font-family="'JetBrains Mono', monospace" font-size="15" font-weight="500"

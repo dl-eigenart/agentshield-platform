@@ -63,7 +63,7 @@
   <text fill="#e4e4e7"
         font-family="Inter, system-ui, sans-serif" font-size="66" font-weight="700"
         letter-spacing="-0.02em">
-    <tspan x="80" y="300">99.4% recall across</tspan><tspan x="80" y="388">4 public datasets.</tspan>
+    <tspan x="80" y="300">F1 0.921 across</tspan><tspan x="80" y="388">6 public datasets.</tspan>
   </text>
 
   
@@ -72,12 +72,12 @@
                 fill="#12121a" stroke="#1e1e2e"/>
           <text x="150" y="108" fill="#818cf8" text-anchor="middle"
                 font-family="'JetBrains Mono', monospace" font-size="64" font-weight="700">
-            99.4%
+            0.921
           </text>
           <text x="150" y="150" fill="#a1a1aa" text-anchor="middle"
                 font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="500"
                 letter-spacing="0.1em" text-transform="uppercase">
-            Recall
+            F1 · 5,972 samples
           </text>
         </g>
         
@@ -86,7 +86,7 @@
   <text x="80" y="500" fill="#a1a1aa"
         font-family="Inter, system-ui, sans-serif" font-size="24" font-weight="400"
         letter-spacing="0">
-    Tested on 12,000 prompts. Median latency 14ms. Full methodology online.
+    5,972 samples · p50 2.44 ms · p95 3.80 ms · Full methodology online.
   </text>
 
   <!-- footer -->
@@ -94,7 +94,7 @@
     <circle cx="6" cy="-5" r="5" fill="#22c55e"/>
     <text x="22" y="0" fill="#a1a1aa"
           font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="500">
-      agentshield.dev
+      agentshield.pro
     </text>
     <text x="1040" y="0" fill="#a1a1aa" text-anchor="end"
           font-family="'JetBrains Mono', monospace" font-size="15" font-weight="500"
