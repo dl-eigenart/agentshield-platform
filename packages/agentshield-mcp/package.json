@@ -1,6 +1,7 @@
 {
   "name": "@eigenart/agentshield-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
+  "mcpName": "io.github.dl-eigenart/agentshield-mcp",
   "description": "MCP server for AgentShield — detect prompt injection, jailbreak, and social-engineering attempts in any text before your agent processes it.",
   "license": "MIT",
   "author": "Eigenart Filmproduktion <eigenart.filmproduction@gmail.com>",
@@ -22,11 +23,16 @@
     "ai-security",
     "agent-security",
     "guardrails",
+    "runtime-gateway",
+    "real-time-classifier",
     "agentshield",
     "claude",
     "cursor",
     "cline"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -42,7 +48,7 @@
     "node": ">=18"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && chmod +x dist/index.js",
     "dev": "tsx src/index.ts",
     "start": "node dist/index.js",
     "prepublishOnly": "npm run build",

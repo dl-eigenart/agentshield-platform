@@ -1,0 +1,40 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.dl-eigenart/agentshield-mcp",
+  "title": "AgentShield",
+  "description": "Runtime gateway and real-time classifier for LLM agents. Detects prompt-injection, jailbreak, and social-engineering attempts in any untrusted text before your agent processes it. Single tool: classify_text. Hosted API (p50 2.4 ms, F1 0.921 on a public 5,972-sample benchmark).",
+  "websiteUrl": "https://agentshield.pro",
+  "repository": {
+    "url": "https://github.com/dl-eigenart/agentshield-platform",
+    "source": "github",
+    "subfolder": "packages/agentshield-mcp"
+  },
+  "version": "0.1.1",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "@eigenart/agentshield-mcp",
+      "version": "0.1.1",
+      "runtimeHint": "npx",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "AGENTSHIELD_API_KEY",
+          "description": "AgentShield API key. Free tier: 100 classifications/day, no credit card. Sign up at https://agentshield.pro/signup.",
+          "isRequired": true,
+          "isSecret": true
+        },
+        {
+          "name": "AGENTSHIELD_BASE_URL",
+          "description": "Override base URL for self-hosted AgentShield gateway. Defaults to https://api.agentshield.pro.",
+          "default": "https://api.agentshield.pro",
+          "isRequired": false,
+          "isSecret": false
+        }
+      ]
+    }
+  ]
+}
