@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AgentShield — AI Agent Security API</title>
-<meta name="description" content="Protect your AI agents from prompt injection, jailbreaks, and adversarial attacks. 190/190 eval score. Production-ready API.">
+<meta name="description" content="Protect your AI agents from prompt injection, jailbreaks, and adversarial attacks. F1 0.921 on a 5,972-sample public benchmark. Production-ready API.">
 <meta property="og:title" content="AgentShield — AI Agent Security API">
-<meta property="og:description" content="Stop prompt injection. Protect your AI agents. 190/190 eval score. One API call, 6 layers of defense.">
+<meta property="og:description" content="Stop prompt injection. Protect your AI agents. F1 0.921 on a 5,972-sample public benchmark. One API call, 6 layers of defense.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://agentshield.pro">
 <meta property="og:image" content="https://agentshield.pro/static/og-image.png?v=2">
@@ -17,7 +17,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@agentshield">
 <meta name="twitter:title" content="AgentShield — AI Agent Security API">
-<meta name="twitter:description" content="Stop prompt injection. Protect your AI agents. 190/190 eval score.">
+<meta name="twitter:description" content="Stop prompt injection. Protect your AI agents. F1 0.921 on a 5,972-sample public benchmark.">
 <meta name="twitter:image" content="https://agentshield.pro/static/og-image.png?v=2">
 <link rel="canonical" href="https://agentshield.pro/">
 <link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,/9j/4QAYRXhpZgAASUkqAAgAAAAAAAAAAAAAAP/sABFEdWNreQABAAQAAAA8AAD/4QNNaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLwA8P3hwYWNrZXQgYmVnaW49Iu+7vyIgaWQ9Ilc1TTBNcENlaGlIenJlU3pOVGN6a2M5ZCI/PiA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJBZG9iZSBYTVAgQ29yZSAxMC4wLWMwMDAgNzkuZDIwZTQ2NjMwLCAyMDI1LzEyLzA5LTAyOjExOjIzICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgMjcuNiAoMjAyNjAzMjIubS4zNDc1IDdmMTQzNmYpICAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDowMThCNEVFOTIxMjIxMUYxQjE2NUNBMjU5NTJCQjJBMyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDowMThCNEVFQTIxMjIxMUYxQjE2NUNBMjU5NTJCQjJBMyI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjAxOEI0RUU3MjEyMjExRjFCMTY1Q0EyNTk1MkJCMkEzIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjAxOEI0RUU4MjEyMjExRjFCMTY1Q0EyNTk1MkJCMkEzIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+/+4ADkFkb2JlAGTAAAAAAf/bAIQABgQEBAUEBgUFBgkGBQYJCwgGBggLDAoKCwoKDBAMDAwMDAwQDA4PEA8ODBMTFBQTExwbGxscHx8fHx8fHx8fHwEHBwcNDA0YEBAYGhURFRofHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8f/8AAEQgAIAAgAwERAAIRAQMRAf/EAHYAAAIDAQAAAAAAAAAAAAAAAAABBQYHCAEBAAIDAAAAAAAAAAAAAAAAAAQFAQIDEAABAwMEAgIDAAAAAAAAAAACAQMEABEFIRIGBzFhUSKhQhURAAIBAgUDBQAAAAAAAAAAAAABAgMEETESMgUhYXFBUYGhUv/aAAwDAQACEQMRAD8A6IoAoAoBUA6AoXZnY0/ir0OBj4QSJs5snG3nVVQCxbERAGykV/dXHF8bG4TlJ4Ricq1VQWLyI7rDtmbyfNvcdyMZop8OKr7+QjKoskYGIE2ja7vG9PshWVUXStL/AI+NKOuL6N5HG0ryqx1NaU9vvp9G/Ofg075/FVRLCgKb2VwqTyPHsyMaoDmYKGkZXF2iQOW3ju/UtPqq1Z8ZfKjJqeyWfwRLu1VZJN9E8Wv12fbEgOk+qp3D2ZuUzKh/YyAo0LDZIYsMCW/appopmVlK2iWrPJXyrNRjtX2SYo1Gqs2CgCgDWgEl7WVb+/FAf//Z">
@@ -204,7 +204,7 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:v
       "applicationCategory": "SecurityApplication",
       "applicationSubCategory": "AI Security",
       "operatingSystem": "Web, Linux, macOS, Windows",
-      "description": "Prompt-injection detection API for LLM agents. Sub-20ms latency, 99.4% recall, 100 free requests/day.",
+      "description": "Prompt-injection detection API for LLM agents. Sub-10ms latency, 93.6% recall on a 5,972-sample public benchmark, 100 free requests/day.",
       "offers": [
         { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "USD", "description": "100 requests/day, no credit card" },
         { "@type": "Offer", "name": "Dev", "price": "29", "priceCurrency": "USD", "description": "5,000 requests/day" },
@@ -230,7 +230,7 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:v
         {
           "@type": "Question",
           "name": "How fast is the API?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Sub-20ms classification latency, p50 ~14ms measured on public benchmarks." }
+          "acceptedAnswer": { "@type": "Answer", "text": "Sub-10ms classification latency, p50 2.44ms and p95 3.80ms measured on a 5,972-sample public benchmark." }
         },
         {
           "@type": "Question",
@@ -260,7 +260,6 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:v
     <a href="/benchmark">Benchmark</a>
     <a href="/blog">Blog</a>
     <a href="https://api.agentshield.pro/docs" target="_blank">API Docs</a>
-    <a href="https://github.com/dl-eigenart/agentshield-platform" target="_blank" rel="noopener">GitHub</a>
     <a href="/signup" class="btn btn-primary">Get API Key</a>
   </div>
 </nav>
@@ -303,12 +302,12 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:v
 <section class="eval">
   <div class="eval-inner">
     <div class="eval-score">
-      <div class="eval-number">190/190</div>
-      <div class="eval-label">Eval Score</div>
+      <div class="eval-number">F1 0.921</div>
+      <div class="eval-label">Public Benchmark</div>
     </div>
     <div class="eval-details">
-      <h3>Perfect Detection Rate</h3>
-      <p>Tested against 190 adversarial prompts including homoglyphs, encoding attacks, invisible characters, leetspeak, multi-language injection, and advanced jailbreak chains.</p>
+      <h3>Reproducible on Open Data</h3>
+      <p>Evaluated on 5,972 samples across six public prompt-injection datasets (gandalf, safeguard, deepset, spml, jackhhao, pint). Latency p50 2.44&nbsp;ms, p95 3.80&nbsp;ms. Full results, false-positive/false-negative samples, and reproduction scripts are in the repo.</p>
       <div class="eval-bar"><div class="eval-bar-fill"></div></div>
     </div>
   </div>
@@ -421,7 +420,7 @@ if result["is_threat"]:
     </div>
     <div class="snip-body" data-snip-body="sdk">
       <button class="snip-copy" onclick="copySnip('sdk')">Copy</button>
-<pre id="snip-sdk">pip install agentshield-guard
+<pre id="snip-sdk">pip install agentshield
 
 from agentshield import AgentShield
 
@@ -529,7 +528,7 @@ defer resp.Body.Close()</pre>
 <!-- Footer -->
 <footer>
   <p>&copy; 2026 AgentShield by Eigenart Filmproduktion &mdash; Frankfurt, Germany</p>
-  <p style="margin-top:.5rem"><a href="/blog">Blog</a> &middot; <a href="/benchmark">Benchmark</a> &middot; <a href="/compare">Compare</a> &middot; <a href="/status">Status</a> &middot; <a href="/account">Account</a> &middot; <a href="https://api.agentshield.pro/docs">API Docs</a> &middot; <a href="https://github.com/dl-eigenart/agentshield-platform">GitHub</a> &middot; <a href="https://pypi.org/project/agentshield-guard/">PyPI</a> &middot; <a href="mailto:info@leonforte.de">Contact</a></p>
+  <p style="margin-top:.5rem"><a href="/blog">Blog</a> &middot; <a href="/benchmark">Benchmark</a> &middot; <a href="/compare">Compare</a> &middot; <a href="/status">Status</a> &middot; <a href="/account">Account</a> &middot; <a href="https://api.agentshield.pro/docs">API Docs</a> &middot; <a href="mailto:info@leonforte.de">Contact</a></p>
   <p style="margin-top:.5rem"><a href="/terms">Terms</a> &middot; <a href="/privacy">Privacy</a> &middot; <a href="/refund">Refund Policy</a></p>
 </footer>
 
