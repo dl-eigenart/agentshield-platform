@@ -1,0 +1,9 @@
+src/
+node_modules/
+tsconfig.json
+.gitignore
+.env
+.env.local
+*.log
+.DS_Store
+PUBLISH.md
