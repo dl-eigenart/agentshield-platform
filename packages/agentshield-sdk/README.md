@@ -7,7 +7,7 @@ AgentShield is a fast, low-latency classifier that flags prompt-injection, jailb
 ## Install
 
 ```bash
-pip install agentshield-sdk
+pip install agentshield-guard
 ```
 
 Requires Python 3.8+.

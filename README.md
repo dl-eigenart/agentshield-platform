@@ -15,7 +15,7 @@ Public API: `https://api.agentshield.pro/v1/classify`. Live site: [agentshield.p
 ## Quickstart
 
 ```bash
-pip install agentshield-sdk
+pip install agentshield-guard
 ```
 
 ```python
@@ -45,7 +45,7 @@ curl -X POST https://api.agentshield.pro/v1/classify \
 
 | Path | Purpose |
 |---|---|
-| [`packages/agentshield-sdk/`](./packages/agentshield-sdk) | Official Python SDK (`pip install agentshield-sdk`) — sync + async client, typed responses |
+| [`packages/agentshield-sdk/`](./packages/agentshield-sdk) | Official Python SDK (`pip install agentshield-guard`) — sync + async client, typed responses |
 | [`services/landing-page/`](./services/landing-page) | FastAPI landing site, live demo proxy, self-serve signup, customer dashboard |
 | [`benchmark/`](./benchmark) | Reproducible benchmark harness — datasets, runner, analysis, published report |
 | [`examples/`](./examples) | Integration examples (LangChain, OpenAI SDK, FastAPI middleware) |
