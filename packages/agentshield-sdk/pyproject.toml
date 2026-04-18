@@ -3,8 +3,8 @@ requires = ["hatchling>=1.18"]
 build-backend = "hatchling.build"
 
 [project]
-name = "agentshield-sdk"
-version = "0.1.0"
+name = "agentshield-guard"
+version = "0.1.2"
 description = "Official Python SDK for AgentShield — runtime gateway for real-time prompt-injection and jailbreak detection in LLM agents."
 readme = "README.md"
 requires-python = ">=3.8"

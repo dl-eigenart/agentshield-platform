@@ -7,10 +7,10 @@ AgentShield is a low-latency runtime classifier (p50 ~2.4 ms) that flags adversa
 ## Install
 
 ```bash
-pip install agentshield-sdk
+pip install agentshield-guard
 ```
 
-> The distribution name on PyPI is **`agentshield-sdk`**; the import name stays `agentshield`. Requires Python 3.8+.
+> The distribution name on PyPI is **`agentshield-guard`**; the import name stays `agentshield`. Requires Python 3.8+.
 
 ## Quickstart
 
