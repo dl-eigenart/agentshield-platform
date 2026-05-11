@@ -29,7 +29,19 @@ STATUS_DB = DATA_DIR / "status.db"
 # Configuration (env-driven)
 GATEWAY_URL = os.getenv("AGENTSHIELD_GATEWAY_URL", "http://localhost:8820")
 DEMO_API_KEY = os.getenv("AGENTSHIELD_DEMO_API_KEY", "")
-ADMIN_KEY = os.getenv("AGENTSHIELD_ADMIN_KEY", "")
+ADMIN_KEY_FILE = os.path.expanduser("~/.agentshield/admin_key.txt")
+_ADMIN_KEY_FALLBACK = os.getenv("AGENTSHIELD_ADMIN_KEY", "")
+
+def get_admin_key():
+    """Read admin key fresh from file (auto-syncs after gateway restart)."""
+    try:
+        with open(ADMIN_KEY_FILE, "r") as f:
+            key = f.read().strip()
+            if key:
+                return key
+    except FileNotFoundError:
+        pass
+    return _ADMIN_KEY_FALLBACK
 SITE_URL = os.getenv("AGENTSHIELD_SITE_URL", "https://agentshield.pro")
 
 # SMTP (reads SMTP_* from env — share billing.env on agents-pc via EnvironmentFile)
@@ -42,11 +54,104 @@ NOTIFY_EMAIL = os.getenv("NOTIFY_EMAIL", "hello@agentshield.pro")
 app = FastAPI(title="AgentShield Landing Page", docs_url=None, redoc_url=None)
 http_client = httpx.AsyncClient(timeout=20.0)
 
+# ── Analytics middleware ──────────────────────────────────────────────────────
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request as StarletteRequest
+
+# Analytics IP rate limit: max 10 pageviews per IP per minute (blocks scrapers)
+_analytics_hits: dict[str, deque] = defaultdict(deque)
+_analytics_lock = threading.Lock()
+_ANALYTICS_RATE_WINDOW = 60  # seconds
+_ANALYTICS_RATE_MAX = 10     # max pageviews per IP per window
+
+def _analytics_rate_ok(ip: str) -> bool:
+    now = time.time()
+    with _analytics_lock:
+        q = _analytics_hits[ip]
+        while q and q[0] < now - _ANALYTICS_RATE_WINDOW:
+            q.popleft()
+        if len(q) >= _ANALYTICS_RATE_MAX:
+            return False
+        q.append(now)
+        return True
+
+class AnalyticsMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: StarletteRequest, call_next):
+        response = await call_next(request)
+        try:
+            path = request.url.path
+            if path in _TRACK_PATHS and response.status_code == 200:
+                ua = request.headers.get("user-agent", "")
+                if not _is_bot(ua):
+                    ip = request.headers.get("x-forwarded-for", "").split(",")[0].strip() or (request.client.host if request.client else "")
+                    if _analytics_rate_ok(ip):
+                        referrer = request.headers.get("referer", "")
+                        conn = sqlite3.connect(str(ANALYTICS_DB))
+                        conn.execute(
+                            "INSERT INTO pageviews (ts, path, referrer, ip, user_agent, country) VALUES (?,?,?,?,?,?)",
+                            (int(time.time()), path, referrer or None, ip or None, ua[:500] or None, None)
+                        )
+                        # Cleanup: keep 90 days
+                        conn.execute("DELETE FROM pageviews WHERE ts < ?", (int(time.time()) - 90 * 86400,))
+                        conn.commit()
+                        conn.close()
+        except Exception as e:
+            print(f"[analytics] error: {e}")
+        return response
+
+app.add_middleware(AnalyticsMiddleware)
+
+
 # ── In-memory IP rate limit for demo proxy (60 req/IP/hour) ─────────────────
 _demo_hits: dict[str, deque] = defaultdict(deque)
 _demo_lock = threading.Lock()
 DEMO_RATE_WINDOW_SECONDS = 3600
 DEMO_RATE_MAX = 60
+
+# ── Analytics ─────────────────────────────────────────────────────────────────
+ANALYTICS_DB = DATA_DIR / "analytics.db"
+ANALYTICS_PASSWORD = os.getenv("AGENTSHIELD_ANALYTICS_PW", "")
+GATEWAY_DB = Path.home() / ".agentshield" / "gateway.db"
+
+def init_analytics_db():
+    conn = sqlite3.connect(str(ANALYTICS_DB))
+    conn.execute("PRAGMA journal_mode=WAL")
+    conn.executescript("""
+        CREATE TABLE IF NOT EXISTS pageviews (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            ts INTEGER NOT NULL,
+            path TEXT NOT NULL,
+            referrer TEXT,
+            ip TEXT,
+            user_agent TEXT,
+            country TEXT
+        );
+        CREATE INDEX IF NOT EXISTS idx_pv_ts ON pageviews(ts);
+        CREATE INDEX IF NOT EXISTS idx_pv_path ON pageviews(path);
+    """)
+    conn.close()
+
+# Bot / crawler filter
+_BOT_KEYWORDS = {"bot", "crawler", "spider", "curl", "wget", "python-requests",
+                 "httpx", "go-http", "java/", "headlesschrome", "lighthouse",
+                 "pingdom", "uptimerobot", "semrush", "ahref", "bytespider",
+                 "gptbot", "claudebot", "bingbot", "googlebot", "yandex",
+                 "baiduspider", "facebookexternalhit", "twitterbot",
+                 "cms-checker", "dataprovider", "palo alto", "cortex",
+                 "censys", "shodan", "nmap", "masscan", "zgrab",
+                 "netcraft", "expanse", "nuclei", "httpie", "postman",
+                 "scrapy", "phantomjs", "selenium", "puppeteer", "playwright"}
+
+def _is_bot(ua: str) -> bool:
+    ua_lower = (ua or "").lower()
+    return any(kw in ua_lower for kw in _BOT_KEYWORDS)
+
+# Pages we want to track (not static assets, not API calls)
+_TRACK_PATHS = {"/", "/blog", "/benchmark", "/compare", "/self-hosted",
+                "/security", "/signup", "/account", "/status", "/dashboard",
+                "/pricing", "/terms", "/privacy", "/refund",
+                "/blog/benchmark", "/blog/mythos", "/blog/hijacked",
+                "/blog/multi-agent-frontier", "/blog/ncsc-perfect-storm", "/blog/tutorial-5min"}
 
 
 def demo_rate_ok(ip: str) -> bool:
@@ -119,6 +224,7 @@ def status_worker():
 
 @app.on_event("startup")
 async def _startup():
+    init_analytics_db()
     init_status_db()
     t = threading.Thread(target=status_worker, daemon=True, name="status-worker")
     t.start()
@@ -158,6 +264,41 @@ async def benchmark():
 @app.get("/blog/benchmark")
 async def blog_benchmark():
     return page("blog-benchmark.html")
+
+
+@app.get("/blog/mythos")
+async def blog_mythos():
+    return page("blog-mythos.html")
+
+
+@app.get("/blog/hijacked")
+async def blog_hijacked():
+    return page("blog-hijacked.html")
+
+
+@app.get('/blog/multi-agent-frontier')
+async def blog_multi_agent():
+    return page('blog-multi-agent-frontier.html')
+
+
+
+
+@app.get('/security')
+async def security_page():
+    return FileResponse('/opt/agentshield-landing/security-compliance.html')
+
+@app.get('/self-hosted')
+async def self_hosted_page():
+    return FileResponse('/opt/agentshield-landing/self-hosted.html')
+
+@app.get('/blog/ncsc-perfect-storm')
+async def blog_ncsc_perfect_storm():
+    return page("blog-ncsc-perfect-storm.html")
+
+
+@app.get('/blog/tutorial-5min')
+async def blog_tutorial_5min():
+    return page("blog-tutorial-5min.html")
 
 
 @app.get("/compare")
@@ -205,6 +346,11 @@ async def refund():
     return page("refund.html")
 
 
+@app.get("/googlef11c3da79495d3fa.html")
+async def google_verify():
+    return page("googlef11c3da79495d3fa.html")
+
+
 @app.get("/pricing")
 async def pricing_redirect():
     return RedirectResponse(url="/#pricing")
@@ -224,10 +370,11 @@ async def robots():
     return PlainTextResponse(body, media_type="text/plain")
 
 
-@app.get("/llms.txt")
+@app.api_route("/llms.txt", methods=["GET", "HEAD"])
 async def llms_txt():
     """LLM-facing discovery document. See https://llmstxt.org for the emerging spec.
-    Served as text/plain so crawlers (and agents doing web_fetch) get a clean read."""
+    Served as text/plain so crawlers (and agents doing web_fetch) get a clean read.
+    HEAD is supported so crawlers can probe Content-Type before a full GET."""
     return FileResponse(STATIC_DIR / "llms.txt", media_type="text/plain; charset=utf-8")
 
 
@@ -237,6 +384,13 @@ async def sitemap():
         ("/", "1.0", "weekly"),
         ("/blog", "0.9", "weekly"),
         ("/blog/benchmark", "0.9", "monthly"),
+        ("/blog/mythos", "0.9", "weekly"),
+        ("/blog/hijacked", "0.8", "monthly"),
+        ("/security", "0.7", "monthly"),
+        ("/self-hosted", "0.8", "weekly"),
+        ("/blog/multi-agent-frontier", "0.9", "weekly"),
+        ("/blog/ncsc-perfect-storm", "0.9", "weekly"),
+        ("/blog/tutorial-5min", "0.9", "weekly"),
         ("/benchmark", "0.9", "weekly"),
         ("/compare", "0.8", "monthly"),
         ("/status", "0.5", "hourly"),
@@ -398,20 +552,22 @@ async def signup(request: Request):
 
     email = (body.get("email") or "").strip().lower()
     name = (body.get("name") or (email.split("@")[0] if email else "")).strip()
+    promo_code = (body.get("promo_code") or "").strip().upper()
 
     if not email or not EMAIL_RE.match(email):
         raise HTTPException(status_code=400, detail={"error": "invalid_email", "message": "Please provide a valid email address."})
     if len(name) > 100:
         name = name[:100]
 
-    if not ADMIN_KEY:
+    admin_key = get_admin_key()
+    if not admin_key:
         raise HTTPException(status_code=503, detail={"error": "signup_unavailable", "message": "Signup temporarily unavailable. Contact hello@agentshield.pro."})
 
     try:
         resp = await http_client.post(
             f"{GATEWAY_URL}/admin/keys",
-            headers={"x-api-key": ADMIN_KEY, "Content-Type": "application/json"},
-            json={"name": name, "email": email, "tier": "free"},
+            headers={"x-api-key": admin_key, "Content-Type": "application/json"},
+            json={"name": name, "email": email, "tier": "free", "promo_code": promo_code or None},
             timeout=10.0,
         )
     except Exception as e:
@@ -424,9 +580,17 @@ async def signup(request: Request):
     api_key = data["api_key"]
     prefix = data["prefix"]
 
+    promo_applied = data.get("promo_applied")
+    promo_limit = data.get("promo_limit", 100)
+    promo_expires = data.get("promo_expires", "")
+    if promo_applied:
+        tier_label = f"Product Hunt promo — {promo_limit} requests/day until {promo_expires[:10]}"
+    else:
+        tier_label = "free tier — 100 requests/day"
+
     body_text = f"""Welcome to AgentShield!
 
-Your API key (free tier — 100 requests/day):
+Your API key ({tier_label}):
 
   {api_key}
 
@@ -446,7 +610,7 @@ Keep this key private — it authenticates your account.
 """
     body_html = f"""<!DOCTYPE html><html><body style="font-family:-apple-system,Segoe UI,sans-serif;max-width:560px;margin:2rem auto;color:#222;line-height:1.6;">
 <h2 style="color:#6366f1">Welcome to AgentShield</h2>
-<p>Your API key (free tier — <strong>100 requests/day</strong>):</p>
+<p>Your API key (<strong>{tier_label}</strong>):</p>
 <pre style="background:#f4f4f6;padding:1rem;border-radius:8px;font-size:.9rem;overflow:auto;"><code>{api_key}</code></pre>
 <h3>Quick start</h3>
 <pre style="background:#0a0a0f;color:#e5e5e7;padding:1rem;border-radius:8px;font-size:.85rem;overflow:auto;"><code>curl -X POST https://api.agentshield.pro/v1/classify \\
@@ -459,13 +623,21 @@ Keep this key private — it authenticates your account.
 </body></html>"""
 
     sent = _send_email(email, "Your AgentShield API key", body_text, body_html)
-    return {
+    result = {
         "ok": True,
         "prefix": prefix,
         "email_sent": sent,
         "api_key": api_key if not sent else None,
         "message": "Check your inbox for your API key." if sent else "Save your API key now — we couldn't send it by email.",
     }
+    if promo_applied:
+        result["promo_applied"] = promo_applied
+        result["promo_limit"] = promo_limit
+        result["promo_expires"] = promo_expires
+    if data.get("promo_invalid"):
+        result["promo_invalid"] = True
+        result["promo_message"] = data.get("promo_message", "Invalid promo code.")
+    return result
 
 
 # ── Account dashboard ────────────────────────────────────────────────────────
@@ -571,6 +743,90 @@ async def create_checkout(request: Request):
         payload = {"error": "non_json_response", "text": resp.text[:500]}
     return JSONResponse(status_code=resp.status_code, content=payload)
 
+
+
+
+# ── Admin analytics ──────────────────────────────────────────────────────────
+@app.get("/admin/analytics")
+async def analytics_dashboard(request: Request):
+    return FileResponse(STATIC_DIR / "analytics.html", media_type="text/html")
+
+
+@app.get("/api/analytics-data")
+async def analytics_data(request: Request, pw: str = "", hours: int = 24):
+    if pw != ANALYTICS_PASSWORD:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    since = int(time.time()) - hours * 3600
+    conn = sqlite3.connect(str(ANALYTICS_DB))
+    conn.row_factory = sqlite3.Row
+    try:
+        # Total pageviews
+        total = conn.execute("SELECT COUNT(*) as c FROM pageviews WHERE ts > ?", (since,)).fetchone()["c"]
+
+        # Unique IPs
+        unique_ips = conn.execute("SELECT COUNT(DISTINCT ip) as c FROM pageviews WHERE ts > ?", (since,)).fetchone()["c"]
+
+        # Top pages
+        top_pages = [dict(r) for r in conn.execute(
+            "SELECT path, COUNT(*) as views FROM pageviews WHERE ts > ? GROUP BY path ORDER BY views DESC LIMIT 20", (since,)
+        ).fetchall()]
+
+        # Top referrers
+        top_referrers = [dict(r) for r in conn.execute(
+            "SELECT referrer, COUNT(*) as views FROM pageviews WHERE ts > ? AND referrer IS NOT NULL AND referrer != '' GROUP BY referrer ORDER BY views DESC LIMIT 20", (since,)
+        ).fetchall()]
+
+        # Hourly breakdown (last 48h max)
+        hourly = [dict(r) for r in conn.execute(
+            """SELECT (ts / 3600) * 3600 as hour_ts, COUNT(*) as views, COUNT(DISTINCT ip) as visitors
+               FROM pageviews WHERE ts > ? GROUP BY hour_ts ORDER BY hour_ts ASC""", (since,)
+        ).fetchall()]
+
+        # Recent pageviews (live feed)
+        recent = [dict(r) for r in conn.execute(
+            "SELECT ts, path, referrer, ip, user_agent FROM pageviews WHERE ts > ? ORDER BY ts DESC LIMIT 50", (since,)
+        ).fetchall()]
+
+        # Daily breakdown
+        daily = [dict(r) for r in conn.execute(
+            """SELECT date(ts, 'unixepoch') as day, COUNT(*) as views, COUNT(DISTINCT ip) as visitors
+               FROM pageviews WHERE ts > ? GROUP BY day ORDER BY day ASC""",
+            (int(time.time()) - 30 * 86400,)
+        ).fetchall()]
+
+    finally:
+        conn.close()
+
+
+    # ── Signup stats from gateway DB ─────────────────────────────────────────
+    signups = {"total": 0, "active": 0, "new_7d": 0, "new_24h": 0, "keys": []}
+    try:
+        if GATEWAY_DB.exists():
+            gw = sqlite3.connect(str(GATEWAY_DB))
+            gw.row_factory = sqlite3.Row
+            signups["total"] = gw.execute("SELECT COUNT(*) as c FROM api_keys").fetchone()["c"]
+            signups["active"] = gw.execute("SELECT COUNT(*) as c FROM api_keys WHERE active=1").fetchone()["c"]
+            signups["new_7d"] = gw.execute("SELECT COUNT(*) as c FROM api_keys WHERE created_at > datetime('now', '-7 days')").fetchone()["c"]
+            signups["new_24h"] = gw.execute("SELECT COUNT(*) as c FROM api_keys WHERE created_at > datetime('now', '-1 day')").fetchone()["c"]
+            signups["keys"] = [dict(r) for r in gw.execute(
+                "SELECT key_prefix, name, email, tier, active, created_at, last_used FROM api_keys ORDER BY created_at DESC LIMIT 20"
+            ).fetchall()]
+            gw.close()
+    except Exception as e:
+        print(f"[analytics] gateway DB error: {e}")
+
+    return {
+        "period_hours": hours,
+        "total_pageviews": total,
+        "unique_visitors": unique_ips,
+        "top_pages": top_pages,
+        "top_referrers": top_referrers,
+        "hourly": hourly,
+        "daily": daily,
+        "recent": recent,
+        "signups": signups,
+    }
 
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 

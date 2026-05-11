@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sign Up — Free AgentShield API Key</title>
-<meta name="description" content="Get a free AgentShield API key in 30 seconds. 100 requests/day, no credit card, prompt-injection protection for your AI agents.">
+<meta name="description" content="Get a free AgentShield API key in 10 seconds. 100 requests/day, no credit card, prompt-injection protection for your AI agents.">
 <meta property="og:title" content="Sign Up — Free AgentShield API Key">
-<meta property="og:description" content="Free AgentShield API key in 30 seconds. 100 requests/day, no credit card.">
+<meta property="og:description" content="Free AgentShield API key in 10 seconds. 100 requests/day, no credit card.">
 <meta property="og:url" content="https://agentshield.pro/signup">
 <meta property="og:image" content="https://agentshield.pro/static/og/signup.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -26,7 +26,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:blur(20px);b
 .logo{font-size:1.2rem;font-weight:700;display:flex;align-items:center;gap:.5rem}
 .logo-shield{width:28px;height:28px;border-radius:6px;overflow:hidden}.logo-shield img{width:100%;height:100%;object-fit:cover}
 nav .links{display:flex;gap:2rem;align-items:center}
-nav .links a{color:var(--muted);font-size:.9rem;font-weight:500;transition:color .2s}
+nav .links a:not(.btn-primary){color:var(--muted);font-size:.9rem;font-weight:500;transition:color .2s}
 nav .links a:hover{color:var(--text);text-decoration:none}
 .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.5rem;border-radius:8px;font-weight:600;font-size:.95rem;transition:all .2s;border:none;cursor:pointer;text-decoration:none;justify-content:center}
 .btn-primary{background:var(--accent);color:#fff}
@@ -35,7 +35,7 @@ nav .links a:hover{color:var(--text);text-decoration:none}
 .btn-outline{border:1px solid var(--border);color:var(--text);background:transparent}
 .btn-outline:hover{border-color:var(--accent);text-decoration:none}
 
-.wrap{max-width:520px;margin:0 auto;padding:7rem 1.5rem 4rem}
+.wrap{max-width:580px;margin:0 auto;padding:7rem 1.5rem 4rem}
 .eyebrow{color:var(--accent2);font-size:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.8rem;text-align:center}
 h1{font-size:clamp(1.8rem,4vw,2.4rem);font-weight:800;line-height:1.15;margin-bottom:.6rem;text-align:center;color:#fff}
 .sub{color:var(--muted);font-size:1rem;text-align:center;margin-bottom:2rem}
@@ -44,14 +44,21 @@ h1{font-size:clamp(1.8rem,4vw,2.4rem);font-weight:800;line-height:1.15;margin-bo
 .card h2{font-size:1.05rem;margin-bottom:1.2rem}
 
 label{display:block;font-size:.82rem;font-weight:600;color:var(--muted);margin-bottom:.45rem;text-transform:uppercase;letter-spacing:.04em}
-input[type=email],input[type=text]{width:100%;background:#0d0d14;border:1px solid var(--border);border-radius:9px;padding:.85rem 1rem;color:var(--text);font-size:.95rem;font-family:inherit;outline:none;transition:border-color .2s}
+input[type=email]{width:100%;background:#0d0d14;border:1px solid var(--border);border-radius:9px;padding:.85rem 1rem;color:var(--text);font-size:.95rem;font-family:inherit;outline:none;transition:border-color .2s}
 input:focus{border-color:var(--accent)}
 input::placeholder{color:#4a4a5c}
-.row{margin-bottom:1.1rem}
+.row{margin-bottom:1.2rem}
 
-.perks{list-style:none;margin:1.2rem 0 1.5rem}
-.perks li{padding:.3rem 0;font-size:.88rem;color:var(--muted);display:flex;align-items:center;gap:.6rem}
-.perks li::before{content:"\2713";color:var(--green);font-weight:700}
+.trust-row{display:flex;gap:1.2rem;justify-content:center;margin:1.2rem 0;flex-wrap:wrap}
+.trust-badge{display:flex;align-items:center;gap:.4rem;font-size:.78rem;color:var(--muted);font-weight:500}
+.trust-badge .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.dot-green{background:var(--green)}
+.dot-cyan{background:var(--cyan)}
+.dot-accent{background:var(--accent2)}
+
+.perks{list-style:none;margin:1.2rem 0 1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:.4rem .8rem}
+.perks li{padding:.3rem 0;font-size:.85rem;color:var(--muted);display:flex;align-items:center;gap:.5rem}
+.perks li::before{content:"\2713";color:var(--green);font-weight:700;font-size:.8rem}
 
 .legal{font-size:.75rem;color:var(--muted);margin-top:1rem;text-align:center;line-height:1.5}
 
@@ -67,11 +74,27 @@ input::placeholder{color:#4a4a5c}
 .copy-btn:hover{background:var(--accent)}
 .code-sample{background:#0d0d14;border:1px solid var(--border);border-radius:9px;padding:1rem;margin-top:1rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:#c8c8d8;overflow-x:auto;line-height:1.6}
 
+/* Preview section */
+.preview{margin-top:2rem}
+.preview h3{font-size:.9rem;font-weight:700;color:#fff;margin-bottom:.8rem;text-align:center}
+.preview-box{background:#0d0d14;border:1px solid var(--border);border-radius:12px;padding:1.2rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.7}
+.preview-req{color:var(--muted);margin-bottom:.8rem}
+.preview-res{color:#c8c8d8}
+.preview-res .k{color:var(--muted)}
+.preview-res .s{color:var(--cyan)}
+.preview-res .threat{color:var(--red);font-weight:600}
+.preview-res .n{color:var(--orange)}
+
+.stats-row{display:flex;gap:1.5rem;justify-content:center;margin:1.5rem 0;flex-wrap:wrap}
+.mini-stat{text-align:center}
+.mini-stat .num{font-size:1.3rem;font-weight:800;color:#fff}
+.mini-stat .lbl{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-top:.1rem}
+
 .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--muted);font-size:.8rem;max-width:1100px;margin:3rem auto 0}
-@media(max-width:640px){nav .links a:not(.btn){display:none}}
+@media(max-width:640px){nav .links a:not(.btn){display:none}.perks{grid-template-columns:1fr}}
 </style>
 
 <script type="application/ld+json">
@@ -79,7 +102,7 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:v
   "@context": "https://schema.org",
   "@type": "WebPage",
   "name": "Sign Up — Free AgentShield API Key",
-  "description": "Get a free AgentShield API key in 30 seconds. 100 requests/day, no credit card.",
+  "description": "Get a free AgentShield API key in 10 seconds. 100 requests/day, no credit card.",
   "image": "https://agentshield.pro/static/og/signup.png",
   "url": "https://agentshield.pro/signup",
   "isPartOf": { "@type": "WebSite", "url": "https://agentshield.pro/", "name": "AgentShield" },
@@ -99,41 +122,53 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:v
     <a href="/#features">Features</a>
     <a href="/#pricing">Pricing</a>
     <a href="/compare">Compare</a>
+    <a href="/self-hosted">Self-Hosted</a>
     <a href="/benchmark">Benchmark</a>
     <a href="/blog">Blog</a>
+    <a href="/security">Security</a>
     <a href="https://api.agentshield.pro/docs" target="_blank">API Docs</a>
   </div>
 </nav>
 
 <div class="wrap">
-  <div class="eyebrow">Free tier — no credit card</div>
+  <div class="eyebrow">Just your email &middot; 10 seconds &middot; no credit card</div>
   <h1>Get your API key</h1>
-  <p class="sub">100 requests/day, all 6 defense layers, sent to your inbox in a few seconds.</p>
+  <p class="sub">One field. One click. Start classifying inputs immediately.</p>
 
   <div class="card signup-card" id="signup-card">
     <form id="signup-form" novalidate>
       <div id="msg"></div>
       <div class="row">
         <label for="email">Email</label>
-        <input type="email" id="email" name="email" required autocomplete="email" placeholder="you@company.com" />
+        <input type="email" id="email" name="email" required autocomplete="email" placeholder="you@company.com" autofocus />
       </div>
-      <div class="row">
-        <label for="name">Name <span style="text-transform:none;font-weight:400;color:#4a4a5c">· optional</span></label>
-        <input type="text" id="name" name="name" autocomplete="name" placeholder="Jane Doe" />
+      <div style="margin-top:.8rem">
+        <label for="promo" style="display:flex;align-items:center;gap:.4rem">Promo code <span style="font-weight:400;font-size:.75rem;color:#4a4a5c">(optional)</span></label>
+        <input type="text" id="promo" name="promo" autocomplete="off" placeholder="e.g. PRODUCTHUNT2026" style="width:100%;background:#0d0d14;border:1px solid var(--border);border-radius:9px;padding:.85rem 1rem;color:var(--text);font-size:.95rem;font-family:inherit;outline:none;transition:border-color .2s;text-transform:uppercase" />
       </div>
-      <button type="submit" class="btn btn-primary" id="submit-btn" style="width:100%">Send me my API key &rarr;</button>
+      <button type="submit" class="btn btn-primary" id="submit-btn" style="width:100%;padding:.9rem;font-size:1rem">Get API key &rarr;</button>
+
+      <div class="trust-row">
+        <span class="trust-badge"><span class="dot dot-green"></span> No credit card</span>
+        <span class="trust-badge"><span class="dot dot-cyan"></span> EU hosted (Frankfurt)</span>
+        <span class="trust-badge"><span class="dot dot-accent"></span> Zero data retention</span>
+      </div>
+
       <ul class="perks">
-        <li>100 requests/day, free forever</li>
-        <li>All 6 defense layers, no throttling of features</li>
-        <li>Full API docs + Python SDK + cURL examples</li>
-        <li>Frankfurt, DE · EU data residency</li>
+        <li>100 requests/day free</li>
+        <li>p50 latency 2.44ms</li>
+        <li>Context-aware classification</li>
+        <li>Explainable verdicts</li>
+        <li>Python SDK + cURL</li>
+        <li>F1 0.956 on public benchmarks</li>
       </ul>
-      <p class="legal">By continuing you agree to our <a href="/terms">Terms</a> and <a href="/privacy">Privacy Policy</a>. We email your key once and store only a hash on our side. Cancel any time.</p>
+
+      <p class="legal">By continuing you agree to our <a href="/terms">Terms</a> and <a href="/privacy">Privacy Policy</a>. We email your key once and store only a hash. Cancel any time.</p>
     </form>
   </div>
 
   <div class="card success-card" id="success-card">
-    <h2 style="color:var(--green);text-align:center;margin-bottom:.4rem">✓ You're in!</h2>
+    <h2 style="color:var(--green);text-align:center;margin-bottom:.4rem">&#10003; You're in!</h2>
     <p id="success-sub" style="color:var(--muted);text-align:center;margin-bottom:1rem">Your API key was sent to your inbox.</p>
     <div id="inline-key-wrap" style="display:none">
       <label style="margin-bottom:.4rem">Your API key — save it somewhere safe</label>
@@ -143,7 +178,7 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:v
       </div>
       <p class="legal" style="text-align:left;margin:1rem 0 0">We couldn't send the email, so here's your key directly. This is the only time you'll see it — store it now.</p>
     </div>
-    <h2 style="margin-top:1.5rem">Try it in cURL</h2>
+    <h2 style="margin-top:1.5rem">Try it now</h2>
     <div class="code-sample">curl -X POST https://api.agentshield.pro/v1/classify \
   -H "x-api-key: YOUR_KEY" \
   -H "Content-Type: application/json" \
@@ -153,11 +188,32 @@ footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:v
       <a href="/account" class="btn btn-outline" style="flex:1;min-width:140px">My Account</a>
     </div>
   </div>
+
+  <!-- What you get preview -->
+  <div class="preview">
+    <h3>What you get</h3>
+    <div class="preview-box">
+      <div class="preview-req"><span style="color:var(--green)">POST</span> /v1/classify</div>
+      <div class="preview-res">{
+  <span class="k">"verdict"</span>: <span class="threat">"threat"</span>,
+  <span class="k">"confidence"</span>: <span class="n">0.993</span>,
+  <span class="k">"reasons"</span>: [<span class="s">"Instruction override attempt detected"</span>],
+  <span class="k">"latency_ms"</span>: <span class="n">3</span>
+}</div>
+    </div>
+
+    <div class="stats-row">
+      <div class="mini-stat"><div class="num">F1 0.956</div><div class="lbl">accuracy (5 datasets)</div></div>
+      <div class="mini-stat"><div class="num">2.4ms</div><div class="lbl">p50 latency</div></div>
+      <div class="mini-stat"><div class="num">1.5%</div><div class="lbl">false positive rate</div></div>
+    </div>
+  </div>
+
 </div>
 
 <footer>
   <p>&copy; 2026 AgentShield by Eigenart Filmproduktion &mdash; Frankfurt, Germany</p>
-  <p style="margin-top:.5rem"><a href="/blog">Blog</a> &middot; <a href="/benchmark">Benchmark</a> &middot; <a href="/compare">Compare</a> &middot; <a href="/status">Status</a> &middot; <a href="/account">Account</a> &middot; <a href="https://api.agentshield.pro/docs">API Docs</a> &middot; <a href="mailto:info@leonforte.de">Contact</a></p>
+  <p style="margin-top:.5rem"><a href="/blog">Blog</a> &middot; <a href="/benchmark">Benchmark</a> &middot; <a href="/compare">Compare</a> &middot; <a href="/status">Status</a> &middot; <a href="/account">Account</a> &middot; <a href="https://api.agentshield.pro/docs">API Docs</a> &middot; <a href="mailto:hello@agentshield.pro">Contact</a></p>
   <p style="margin-top:.5rem"><a href="/terms">Terms</a> &middot; <a href="/privacy">Privacy</a> &middot; <a href="/refund">Refund Policy</a></p>
 </footer>
 
@@ -177,7 +233,6 @@ form.addEventListener('submit', async (e)=>{
   e.preventDefault();
   clearMsg();
   const email = document.getElementById('email').value.trim().toLowerCase();
-  const name = document.getElementById('name').value.trim();
   if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){
     showMsg('err','Please enter a valid email address.');
     return;
@@ -188,33 +243,34 @@ form.addEventListener('submit', async (e)=>{
     const r = await fetch('/api/signup', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({email, name})
+      body: JSON.stringify({email, name: email.split('@')[0], promo_code: (document.getElementById('promo').value||'').trim().toUpperCase() || undefined})
     });
     const data = await r.json();
     if (!r.ok){
-      const msg = (data.detail && data.detail.message) || (data.detail && typeof data.detail==='string' ? data.detail : null) || 'Signup failed.';
+      const msg = (data.detail && data.detail.message) || (data.detail && typeof data.detail==='string' ? data.detail : null) || 'Signup failed. Please try again or contact hello@agentshield.pro';
       showMsg('err', msg);
       btn.disabled = false;
-      btn.textContent = 'Send me my API key →';
+      btn.textContent = 'Get API key →';
       return;
     }
     signupCard.classList.add('hide');
     successCard.classList.add('show');
+    const promoNote = data.promo_applied ? ` Promo ${data.promo_applied} applied — ${data.promo_limit} req/day for 30 days!` : '';
+    const promoWarn = data.promo_invalid ? `\n⚠️ ${data.promo_message || 'Promo code not recognized.'} Your key was created with the free tier (100 req/day).` : '';
     if (data.email_sent){
-      document.getElementById('success-sub').textContent = 'Check your inbox — your API key just flew out. Prefix: '+data.prefix;
+      document.getElementById('success-sub').textContent = 'Check your inbox — your API key is on its way. Prefix: '+data.prefix + promoNote + promoWarn;
     } else if (data.api_key){
-      document.getElementById('success-sub').textContent = "We couldn't reach our email server right now. Copy your key below — it's the only time it'll be shown.";
+      document.getElementById('success-sub').textContent = "Copy your key below — it's the only time it'll be shown." + promoNote + promoWarn;
       document.getElementById('inline-key-wrap').style.display = 'block';
       document.getElementById('api-key-value').textContent = data.api_key;
-      // replace cURL sample with real key
       document.querySelector('.code-sample').textContent = document.querySelector('.code-sample').textContent.replace('YOUR_KEY', data.api_key);
     } else {
-      document.getElementById('success-sub').textContent = 'Key created (prefix '+data.prefix+'). We tried to email it, but hit an issue. Please contact hello@agentshield.pro.';
+      document.getElementById('success-sub').textContent = 'Key created (prefix '+data.prefix+'). Please contact hello@agentshield.pro if you did not receive the email.';
     }
   }catch(err){
-    showMsg('err','Network error: '+err.message);
+    showMsg('err','Network error. Please try again.');
     btn.disabled = false;
-    btn.textContent = 'Send me my API key →';
+    btn.textContent = 'Get API key →';
   }
 });
 
